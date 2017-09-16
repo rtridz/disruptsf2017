@@ -16,10 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from core import views
+from core.views import needhelp,wannahelp,operator
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^needhelp/', views.needhelp),
-    url(r'^wannahelp/', view.helper),
-    url(r'^operator/', view.operator),
+    url(r'^wannahelp/', views.wannahelp),
+    url(r'^operator/', views.operator),
 ]
