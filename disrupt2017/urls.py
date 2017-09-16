@@ -16,10 +16,15 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from core import views
-from core.views import needhelp,wannahelp,operator
+from core.views import *
 
 urlpatterns = [
+
     url(r'^admin/', admin.site.urls),
+
+    url(r'^index/', indexView.as_view()), #template_name='index.html'
+    url(r"^facebookreturn/$", facebookReturn),
+
     url(r'^needhelp/', needhelp),
     url(r'^wannahelp/', wannahelp),
     url(r'^operator/', operator),
