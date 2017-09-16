@@ -137,8 +137,16 @@ class Shelter(models.Model):
 
 
 class Affected(MyUser):
-    shelter_going = models.ForeignKey(Shelter)
-    shelter_signed_in = models.ForeignKey(Shelter)
+    assosicated_shelter = models.ForeignKey(Shelter)
+    GOING_TO = 1
+    SIGNED_IN = 2
+    TYPE_CHOICES = (
+        (GOING_TO, 'Going to'),
+        (SIGNED_IN, 'Signed in'),
+    )
+    connection_type = models.IntegerField(choices=TYPE_CHOICES)
+
+
 
 
 class AssistanceTicket(models.Model):
