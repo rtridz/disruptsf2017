@@ -120,6 +120,22 @@ class MyUser(AbstractBaseUser):
 #     location_long = models.FloatField()
 #
 #
+
+class HelpProvider(models.Model):
+    orgname = models.CharField(max_length=50)
+
+
+class Shelter(models.Model):
+    provider = models.ForeignKey(HelpProvider, on_delete=models.CASCADE)
+    shelter_name = models.CharField(max_length=50)
+    location_lat = models.FloatField()
+    location_long = models.FloatField()
+    address = models.CharField(max_length=100)
+    max_capacity = models.IntegerField()
+    people_inside = models.IntegerField()
+    people_coming = models.IntegerField()
+
+
 class Affected(MyUser):
     shelter_going = models.ForeignKey(Shelter)
     shelter_signed_in = models.ForeignKey(Shelter)
@@ -150,21 +166,6 @@ class AssistanceTicketReaction(models.Model):
     person_reacted = models.ForeignKey(MyUser)
 
 
-class HelpProvider(models.Model):
-    orgname = models.CharField(max_length=50)
-
-
-class Shelter(models.Model):
-    provider = models.ForeignKey(HelpProvider, on_delete=models.CASCADE)
-    shelter_name = models.CharField(max_length=50)
-    location_lat = models.FloatField()
-    location_long = models.FloatField()
-    address = models.CharField(max_length=100)
-    max_capacity = models.IntegerField()
-    people_inside = models.IntegerField()
-    people_coming = models.IntegerField()
-
-
 class GoodsDemands(models.Model):
     FOOD = 1
     WATER = 2
@@ -185,9 +186,9 @@ class GoodsDemands(models.Model):
 
 
 # ============Managers===============
-class PersonManager(models.Manager):
-    def get_by_natural_key(self, first_name, last_name):
-        return self.get(first_name=first_name, last_name=last_name)
+# class PersonManager(models.Manager):
+#     def get_by_natural_key(self, first_name, last_name):
+#         return self.get(first_name=first_name, last_name=last_name)
 
 #
 # class ShelterManager(models.Manager):
