@@ -20,7 +20,7 @@ from core.views import needhelp,wannahelp,operator
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^needhelp/', views.needhelp),
-    url(r'^wannahelp/', views.wannahelp),
-    url(r'^operator/', views.operator),
+    url(r'^needhelp/', needhelp),
+    url(r'^wannahelp/', wannahelp),
+    url(r'^operator/', operator),
 ]
