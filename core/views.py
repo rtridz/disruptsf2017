@@ -67,22 +67,22 @@ def login(request):
     return render(request, 'pages/login_page.html', template_context)
 
 
-def needhelp(request, optional_form=None):
-    """Summary
-
-    Args:
-        request (TYPE): Description
-    """
-    #result = parse_and_identify(request)
-
-
-    zone = get_affected_zone(request)
-    # if zone is not None:
-    return render(request, 'victim_form.html', 
-                  {'shelter_id': request.GET['shelter_id']})
-    # else:
-    #     return render(request, 'victim_form.html')
-        #return HttpResponse("need to know a bit of location")
+# def needhelp(request, optional_form=None):
+#     """Summary
+#
+#     Args:
+#         request (TYPE): Description
+#     """
+#     #result = parse_and_identify(request)
+#
+#
+#     zone = get_affected_zone(request)
+#     # if zone is not None:
+#     return render(request, 'victim_form.html',
+#                   {'shelter_id': request.GET['shelter_id']})
+#     # else:
+#     #     return render(request, 'victim_form.html')
+#         #return HttpResponse("need to know a bit of location")
 
 
 def add_victim(request):

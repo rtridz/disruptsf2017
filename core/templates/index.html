@@ -23,8 +23,8 @@
         var link = '<div class="shelter_popup">' +
                     '<div class="shelter_name"><a class="shelter_link" href="#{{ shelter.id }}">{{ shelter.shelter_name }}</a></div>' +
                     '<div class="shelter_count">[{{shelter.people_inside}} / {{shelter.max_capacity}}]</div>' +
-                    '<a href="#" class="i_need_help" id="shelter_need_help_popup-content" onclick='+"$('#shelter_need_help_popup').show();"+'>Go there</a>' +
-                    '<a href="#" class="i_want_help" id="shelter_want_help_popup-content" onclick='+"$('#shelter_want_help_popup').show();"+'>I want to help</a>' +
+                    '<a href="#" class="i_need_help" id="shelter_need_help_popup-content" onclick='+"$('#shelter_need_help_popup{{ shelter.id }}').show();"+'>Go there</a>' +
+                    '<a href="#" class="i_want_help" id="shelter_want_help_popup-content" onclick='+"$('#shelter_want_help_popup{{ shelter.id }}').show();"+'>I want to help</a>' +
                     '</div>';
 
 
@@ -71,19 +71,26 @@
 
 <div style="height: 100%">
 
-    <div style="display: none;" class="shelterpopup" id="shelter_need_help_popup">
-        <div class="close" onclick="$('#shelter_need_help_popup').hide()">x</div>
+
+        {% for shelter in shelters %}
+
+    <div style="display: none;" class="shelterpopup" id="shelter_need_help_popup{{ shelter.id }}">
+        <div class="close" onclick="$('#shelter_need_help_popup{{ shelter.id }}').hide()">x</div>
         <div class="content">
-            {% include "blocks/shelter_need_help_popup.html" %}
+            {% include "blocks/shelter_need_help_popup.html" with shelter=shelter%}
         </div>
     </div>
 
-    <div style="display: none;" class="shelterpopup" id="shelter_want_help_popup">
-        <div class="close" onclick="$('#shelter_want_help_popup').hide()">x</div>
+    <div style="display: none;" class="shelterpopup" id="shelter_want_help_popup{{ shelter.id }}">
+        <div class="close" onclick="$('#shelter_want_help_popup{{ shelter.id }}').hide()">x</div>
         <div class="content">
-            {% include "blocks/shelter_want_help_popup.html" %}
+            {% include "blocks/shelter_want_help_popup.html" with shelter=shelter%}
         </div>
     </div>
+
+
+        {% endfor %}
+
 
     <div id="map" class="map"></div>
 

@@ -1,1 +1,145 @@
-i need a help
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<h1>{{ shelter.shelter_name }}</h1>
+<form class="form-horizontal" action="/needhelp/submit" method="post">
+<fieldset>
+
+<input type="hidden" name="shelter_id" value="{{ shelter.id }}" id="shelter_id">
+
+<!-- Form Name -->
+<legend>Please specify your details and requirements</legend>
+
+<!-- Text input-->
+{% csrf_token %}
+
+
+{% if user.is_authenticated %}
+        <input id="name" name="name" type="hidden" value="{{ request.user.name }}" >
+{% else %}
+
+        <div class="form-group">
+        <label class="col-md-4 control-label" for="name">Name</label>
+        <div class="col-md-5">
+
+        <input id="name" name="name" type="text" placeholder="" class="form-control input-md">
+
+        </div>
+        </div>
+{% endif %}
+
+
+{% if not user.is_authenticated %}
+<div class="form-group">
+  <label class="col-md-4 control-label" for="password">Password</label>  
+  <div class="col-md-5">
+  <input id="password" name="password" type="text" placeholder="" class="form-control input-md">
+    
+  </div>
+</div>
+{% endif %}
+
+<!-- Text input-->
+{% if  shelter.location_lat %}
+<div class="form-group">
+  <label class="col-md-4 control-label" for="password">Address</label>
+  <div class="col-md-5">
+  <text id="address">{{ shelter.location_lat }}______{{ shelter.location_long }}</text>
+  </div>
+</div>
+{% endif %}
+
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="phone">Phone Number</label>  
+  <div class="col-md-5">
+  <input id="phone" name="phone" type="text" placeholder="" class="form-control input-md">
+    
+  </div>
+</div>
+
+
+
+{% if user.is_authenticated %}
+    <input id="email" name="email" type="hidden" value="{{ request.user.email }}" >
+{% else %}
+
+    <!-- Text input-->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="email">Email</label>
+      <div class="col-md-5">
+      <input id="email" name="email" type="text" placeholder="" class="form-control input-md">
+
+      </div>
+    </div>
+
+{% endif %}
+
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="familysize">People along with you</label>  
+  <div class="col-md-5">
+  <input id="familysize" name="familysize" type="text" placeholder="write in numerals" class="form-control input-md">
+    
+  </div>
+</div>
+
+<!-- Multiple Checkboxes -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="requirements">Choose your requirements</label>
+  <div class="col-md-4">
+  <div class="checkbox">
+    <label for="requirements-0">
+      <input type="checkbox" name="requirements" id="requirements-0" value="1">
+      Food
+    </label>
+  </div>
+  <div class="checkbox">
+    <label for="requirements-1">
+      <input type="checkbox" name="requirements" id="requirements-1" value="2">
+      Water
+    </label>
+  </div>
+  <div class="checkbox">
+    <label for="requirements-2">
+      <input type="checkbox" name="requirements" id="requirements-2" value="3">
+      Blanket
+    </label>
+  </div>
+  <div class="checkbox">
+    <label for="requirements-3">
+      <input type="checkbox" name="requirements" id="requirements-3" value="4">
+      Pain Killer
+    </label>
+  </div>
+  <div class="checkbox">
+    <label for="requirements-4">
+      <input type="checkbox" name="requirements" id="requirements-4" value="5">
+      Sedative
+    </label>
+  </div>
+  </div>
+</div>
+
+<!-- Textarea -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="misc">Optional comment</label>
+  <div class="col-md-4">                     
+    <textarea class="form-control" id="misc" name="misc"></textarea>
+  </div>
+</div>
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="button"></label>
+  <div class="col-md-4">
+    <button id="button" name="button" class="btn btn-success">Submit</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
