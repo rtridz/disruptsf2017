@@ -1,9 +1,11 @@
+from django.http import HttpResponse
+from django.shortcuts import render
+from affected.affected import *
+from utilities import *
 from urllib.request import urlopen
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views.generic import TemplateView
-
 from facebook import *
 from django.contrib.auth import authenticate
 import datetime
@@ -52,13 +54,18 @@ def facebookReturn(request):
             "facebook id %s\n, username %s\n, email %s\n, name %s\n, birthday %s\n, gender %s\n, link %s" % (
             facebook_id, username, email, name, birthday, gender, link))
 
-
 def needhelp(request):
     """Summary
     
     Args:
         request (TYPE): Description
     """
+    #result = parse_and_identify(request)
+    zone = get_affected_zone(request)
+    if zone is not None:
+        return optional_form
+    else:
+        return HttpResponse("need to know a bit of location")
     pass
 
 def wannahelp(request):
