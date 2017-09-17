@@ -1,0 +1,22 @@
+{
+  "name": "disaster_sms_service",
+  "version": "1.0.0",
+  "description": "An sms listener, sender for communicating with users mobiles during a disaster situation",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtridz/disruptsf2017.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rtridz/disruptsf2017/issues"
+  },
+  "homepage": "https://github.com/rtridz/disruptsf2017#readme"
+}
