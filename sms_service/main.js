@@ -1,7 +1,12 @@
-console.log("Hello");
+console.log("Starting server");
 
 //Requirements
 var Nexmo = require('nexmo');
+var Express = require('express');
+var MessagesManager = require('./messages_manager');
+
+//Initialise the message manager
+var msgManager = new MessagesManager();
 
 //Initialise the nexmo client
 var nexmo = new Nexmo({
@@ -9,27 +14,22 @@ var nexmo = new Nexmo({
     apiSecret: '6cbdba0099362623',
 });
 
-//Begin listening for text messages
-var Express = require('express');
-
+//Setup server to listen for messages
 var app = Express();
 
 app.get('/incoming-sms', function(req, res){
-    console.log(req.query.text);
+    msgManager.receiveMessage(req.query);
     res.sendStatus(200);
 });
-
-app.get('/', function(req, res){
-    res.sendStatus(200);
-});
-
-app.listen(80);
 
 //Function to send a text message
 function sendMesssage(msg) {
     nexmo.message.sendSms("12016728472", "14086097335", msg);
 }
 
-//sendMesssage('Hi, are you in need of assistance?');
+//Begin listening for messages
+app.listen(80);
+console.log("Listening for sms messages");
 
-console.log("Goodbye");
+//temp
+//sendMesssage('Hi, are you in need of assistance?');
