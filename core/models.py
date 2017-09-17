@@ -193,14 +193,14 @@ class Shelter(models.Model):
 #     connection_type = models.IntegerField(choices=TYPE_CHOICES)
 
 
-
-
 class AssistanceTicket(models.Model):
     user_created = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     date_created = models.DateField()
-    type_of_assistance = models.TextField()
-
     date_needed = models.DateField()
+    type_of_assistance = models.TextField()
+    location_lat = models.FloatField()
+    location_long = models.FloatField()
+    
 
     CRITICAL = 1
     URGENT = 2

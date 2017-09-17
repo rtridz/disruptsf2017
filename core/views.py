@@ -73,7 +73,6 @@ def login(request):
     return render(request, 'blocks/facebook.html', template_context)
 
 
-
 def needhelp(request):
     """Summary
     
@@ -102,7 +101,7 @@ def operator(request):
     Args:
         request (TYPE): Description
     """
-    pass
+    return
 
 def viewer(request):
     """Summary
@@ -112,3 +111,30 @@ def viewer(request):
     """
     pass
 
+
+def shelter_list(request):
+
+    # help_provider = HelpProvider.objects.all()[]
+
+    # shelter = Shelter(provider=help_provider, shelter_name='test',
+    #     location_long=0, location_lat=0, address='', max_capacity=1,
+    #     people_inside=1, people_coming=1)
+    # shelter.save()
+
+    result = Shelter.objects.all()
+    return render(request, 'shelter_list.html',
+                  {
+                    'shelters': Shelter.objects.all(),
+                    'tickets': AssistanceTicket.objects.all()
+                  })
+
+def shelters_map(request):
+    shelters_list = Shelter.objects
+    template = loader.get_template('shelters_map.html')
+    context = {
+        'shelters_list': shelters_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+def shelter_info(request, shelter_id):
+    return HttpResponse("You're looking at shelter %s." % shelter_id)

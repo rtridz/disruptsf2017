@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from core import views
 from core.views import *
 
 urlpatterns = [
@@ -27,4 +28,7 @@ urlpatterns = [
     url(r'^needhelp/', needhelp),
     url(r'^wannahelp/', wannahelp),
     url(r'^operator/', operator),
+    url(r'^shelter_list/', shelter_list),
+    # url(r'^(?P<shelter_id>[0-9]+)/$', views.shelter_info, name='shelter_detail'),
+    # url(r'^shelters/', views.shelters_map, name='shelter_map')
 ]
