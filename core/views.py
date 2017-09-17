@@ -1,21 +1,17 @@
+import urllib
+
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView
-from urllib.request import urlopen
-
+from core.models import *
 
 from facebook import *
 from core.affected.affected import get_affected_zone
 
 from django.contrib import auth
 from django.http import HttpResponseRedirect
-import urllib.parse
-import urllib
-
 from core.models import Shelter, AssistanceTicket
 from disrupt2017 import settings
-
-
+import json
 
 
 def indexView(request):
@@ -68,23 +64,26 @@ def login(request):
             error = 'AUTH_DENIED'
 
     template_context = {'settings': settings, 'error': error}
-    return render(request, 'blocks/templates/pages/login_page.html', template_context)
+    return render(request, 'pages/login_page.html', template_context)
 
 
-def needhelp(request, optional_form=None):
-    """Summary
-    
-    Args:
-        request (TYPE): Description
-    """
-    #result = parse_and_identify(request)
-    zone = get_affected_zone(request)
-    if zone is not None:
-        return render(request, 'victim_form.html')
-    else:
-        return render(request, 'victim_form.html')
-        #return HttpResponse("need to know a bit of location")
-    pass
+# def needhelp(request, optional_form=None):
+#     """Summary
+#
+#     Args:
+#         request (TYPE): Description
+#     """
+#     #result = parse_and_identify(request)
+#
+#
+#     zone = get_affected_zone(request)
+#     # if zone is not None:
+#     return render(request, 'victim_form.html',
+#                   {'shelter_id': request.GET['shelter_id']})
+#     # else:
+#     #     return render(request, 'victim_form.html')
+#         #return HttpResponse("need to know a bit of location")
+
 
 def add_victim(request):
     """Summary
@@ -93,7 +92,24 @@ def add_victim(request):
         request (TYPE): Description
     """
     #print(key + " = " + request.POST[key])
-    print(request.POST.getlist('requirements'))
+    if request.POST:
+        user = MyUser.objects.create(
+            username=request.POST['name'],
+            password=request.POST['password'],
+            phone_number=request.POST['phone'],
+            email=request.POST['email'])
+        user.save()
+
+        shelter_ticket = ShelterTicket.objects.create(
+            user=user,
+            shelter=Shelter.objects.get(pk=int(request.POST['shelter_id'])),
+            connection_type=1)
+        shelter_ticket.save()
+
+        user = auth.authenticate(username=request.POST['name'], 
+                            password=request.POST['password'])
+        if user:
+            auth.login(request, user)
 
     return HttpResponse("<h1>Thanks for submitting your information. Here are some guidelines\
         for you</h1>")
@@ -104,7 +120,28 @@ def wannahelp(request):
     Args:
         request (TYPE): Description
     """
-    pass
+    return render(request, 'wanna_help_1.html')
+
+def add_shelter(request):
+    """Summary
+    
+    Args:
+        request (TYPE): Description
+    """
+    #Get provider
+    for key in request.POST.keys():
+        print(key + ' = ' + request.POST[key])
+    #url = 'http://open.mapquestapi.com/nominatim/v1/search.php?key=gowXM2f6C16NEmCvkFMehr5gpfnAjDPI&format=json&q='
+    #query = '+'.join(request.POST['address'].split())
+    #response = requests.get(url+query)
+    #resp = ast.literal_eval(response.text)
+    shelter = Shelter(shelter_name=request.POST['name'],\
+        location_lat=request.POST['lat'], location_long=request.POST['long'],\
+        max_capacity=request.POST['capacity'], people_inside=request.POST['inside']\
+        ,people_coming=request.POST['incoming'])
+    #return HttpResponse(response)
+    return HttpResponse("<h1>Thanks for submitting your information. Gotta need stuff there</h1>")
+
 
 def operator(request):
     """Summary
@@ -121,3 +158,29 @@ def viewer(request):
         request (TYPE): Description
     """
     pass
+
+def emergency_help(request):
+    """Summary
+    
+    Args:
+        request (TYPE): Description
+    """
+    query = AssistanceTicket()
+    query.phone_number = request.POST['number']
+    query.type_of_assistance = request.POST['type']
+    query.location_lat = request.POST['lat']
+    query.location_long = request.POST['long']
+    query.status = request.POST['status']
+    query.save()
+    return HttpResponse("Your request has been registered will be receiving help very soon")
+
+def get_tickets(request):
+    """Summary
+    
+    Args:
+        request (TYPE): Description
+    """
+    tickets = list(AssistanceTicket.objects.get())
+    #for ticket in tickets:
+    data = json.dumps(tickets)
+    return HttpResponse(data, content_type='application/json')

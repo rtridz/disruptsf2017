@@ -1,10 +1,11 @@
+import urllib
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
 from django.db import models
 from django.contrib.auth.models import User
 import json
-import urllib.parse
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, password, facebook_id, link, name, gender, username):
@@ -107,6 +108,7 @@ class MyUser(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
+
 class FacebookSessionError(Exception):
     def __init__(self, error_type, message):
         self.message = message
@@ -120,6 +122,8 @@ class FacebookSessionError(Exception):
 
     def __unicode__(self):
         return u'%s: "%s"' % (self.type, self.message)
+
+
 
 class FacebookSession(models.Model):
 
@@ -172,35 +176,40 @@ class HelpProvider(models.Model):
 
 
 class Shelter(models.Model):
-    provider = models.ForeignKey(HelpProvider, on_delete=models.CASCADE)
     shelter_name = models.CharField(max_length=50)
     location_lat = models.FloatField()
     location_long = models.FloatField()
-    address = models.CharField(max_length=100)
     max_capacity = models.IntegerField()
     people_inside = models.IntegerField()
     people_coming = models.IntegerField()
 
 
-# class Affected(MyUser):
-#     assosicated_shelter = models.ForeignKey(Shelter)
-#     GOING_TO = 1
-#     SIGNED_IN = 2
-#     TYPE_CHOICES = (
-#         (GOING_TO, 'Going to'),
-#         (SIGNED_IN, 'Signed in'),
-#     )
-#     connection_type = models.IntegerField(choices=TYPE_CHOICES)
+class ShelterTicket(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    shelter = models.ForeignKey(Shelter, on_delete=models.CASCADE)
+    date_created = models.DateField(auto_now_add=True)
+    family_size = models.IntegerField(blank=True, null=True)
+
+    GOING_TO = 1
+    SIGNED_IN = 2
+    TYPE_CHOICES = (
+        (GOING_TO, 'Going to'),
+        (SIGNED_IN, 'Signed in'),
+    )
+    connection_type = models.IntegerField(choices=TYPE_CHOICES) 
 
 
 class AssistanceTicket(models.Model):
-    user_created = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    date_created = models.DateField()
-    date_needed = models.DateField()
+    #user_created = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    #date_created = models.DateField()
+    #date_needed = models.DateField()
+    phone_number = models.CharField(max_length=11)
+    date_created = models.DateField(auto_now_add=True)
+    date_needed = models.DateField(auto_now_add=True)
     type_of_assistance = models.TextField()
     location_lat = models.FloatField()
     location_long = models.FloatField()
-    
+    selected = models.BooleanField(default=False)
 
     CRITICAL = 1
     URGENT = 2

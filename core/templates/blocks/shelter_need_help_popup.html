@@ -1,40 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Provide Info</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-<body>
-<br>
 
+
+<h1>{{ shelter.shelter_name }}</h1>
 <form class="form-horizontal" action="/needhelp/submit" method="post">
 <fieldset>
+
+<input type="hidden" name="shelter_id" value="{{ shelter.id }}" id="shelter_id">
 
 <!-- Form Name -->
 <legend>Please specify your details and requirements</legend>
 
 <!-- Text input-->
 {% csrf_token %}
+
+
+{% if user.is_authenticated %}
+        <input id="name" name="name" type="hidden" value="{{ request.user.name }}" >
+{% else %}
+
+        <div class="form-group">
+        <label class="col-md-4 control-label" for="name">Name</label>
+        <div class="col-md-5">
+
+        <input id="name" name="name" type="text" placeholder="" class="form-control input-md">
+
+        </div>
+        </div>
+{% endif %}
+
+
+{% if not user.is_authenticated %}
 <div class="form-group">
-  <label class="col-md-4 control-label" for="name">Name</label>  
+  <label class="col-md-4 control-label" for="password">Password</label>  
   <div class="col-md-5">
-  <input id="name" name="name" type="text" placeholder="" class="form-control input-md">
+  <input id="password" name="password" type="text" placeholder="" class="form-control input-md">
     
   </div>
 </div>
+{% endif %}
 
 <!-- Text input-->
+{% if  shelter.location_lat %}
 <div class="form-group">
-  <label class="col-md-4 control-label" for="textinput">Address</label>  
+  <label class="col-md-4 control-label" for="password">Address</label>
   <div class="col-md-5">
-  <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
-    
+  <text id="address">{{ shelter.location_lat }}______{{ shelter.location_long }}</text>
   </div>
 </div>
+{% endif %}
+
 
 <!-- Text input-->
 <div class="form-group">
@@ -44,6 +60,24 @@
     
   </div>
 </div>
+
+
+
+{% if user.is_authenticated %}
+    <input id="email" name="email" type="hidden" value="{{ request.user.email }}" >
+{% else %}
+
+    <!-- Text input-->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="email">Email</label>
+      <div class="col-md-5">
+      <input id="email" name="email" type="text" placeholder="" class="form-control input-md">
+
+      </div>
+    </div>
+
+{% endif %}
+
 
 <!-- Text input-->
 <div class="form-group">
@@ -109,6 +143,3 @@
 
 </fieldset>
 </form>
-
-</body>
-</html>

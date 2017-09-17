@@ -53,5 +53,5 @@ class FacebookBackend:
 
         try:
             return models.MyUser.objects.get(pk=user_id)
-        except models.MyUser.User.DoesNotExist:
+        except models.MyUser.DoesNotExist:
             return None
