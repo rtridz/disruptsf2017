@@ -111,7 +111,6 @@ def viewer(request):
     """
     pass
 
-<<<<<<< HEAD
 
 def shelter_list(request):
 
