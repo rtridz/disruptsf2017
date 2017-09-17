@@ -1,3 +1,5 @@
+import urllib
+
 from django.http import HttpResponse
 from django.shortcuts import render
 from core.models import *
@@ -63,7 +65,7 @@ def login(request):
             error = 'AUTH_DENIED'
 
     template_context = {'settings': settings, 'error': error}
-    return render(request, 'blocks/templates/pages/login_page.html', template_context)
+    return render(request, 'pages/login_page.html', template_context)
 
 
 def needhelp(request, optional_form=None):
