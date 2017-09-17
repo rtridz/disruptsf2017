@@ -47,14 +47,14 @@ class MyUser(AbstractBaseUser):
         unique=True,
         db_index=True,
     )
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    facebook_id = models.BigIntegerField(blank=True)
-    name = models.CharField(max_length=300)
-    link = models.URLField(max_length=300, blank=True)
+    facebook_id = models.BigIntegerField(blank=True, null=True)
+    name = models.CharField(max_length=300, null=True)
+    link = models.URLField(max_length=300, blank=True, null=True)
     username = models.CharField(max_length=300, blank=True)
-    gender = models.CharField(max_length=200, blank=True)
+    gender = models.CharField(max_length=200, blank=True, null=True)
 
     objects = MyUserManager()
 
@@ -137,15 +137,15 @@ class Shelter(models.Model):
     people_coming = models.IntegerField()
 
 
-class Affected(MyUser):
-    assosicated_shelter = models.ForeignKey(Shelter)
-    GOING_TO = 1
-    SIGNED_IN = 2
-    TYPE_CHOICES = (
-        (GOING_TO, 'Going to'),
-        (SIGNED_IN, 'Signed in'),
-    )
-    connection_type = models.IntegerField(choices=TYPE_CHOICES)
+# class Affected(MyUser):
+#     assosicated_shelter = models.ForeignKey(Shelter)
+#     GOING_TO = 1
+#     SIGNED_IN = 2
+#     TYPE_CHOICES = (
+#         (GOING_TO, 'Going to'),
+#         (SIGNED_IN, 'Signed in'),
+#     )
+#     connection_type = models.IntegerField(choices=TYPE_CHOICES)
 
 
 

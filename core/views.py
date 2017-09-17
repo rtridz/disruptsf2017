@@ -92,14 +92,6 @@ def viewer(request):
     """
     pass
 
-    # provider = models.ForeignKey(HelpProvider, on_delete=models.CASCADE)
-    # shelter_name = models.CharField(max_length=50)
-    # location_lat = models.FloatField()
-    # location_long = models.FloatField()
-    # address = models.CharField(max_length=100)
-    # max_capacity = models.IntegerField()
-    # people_inside = models.IntegerField()
-    # people_coming = models.IntegerField()
 
 def shelter_list(request):
     help_provider = HelpProvider(orgname='test')

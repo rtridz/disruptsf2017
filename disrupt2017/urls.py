@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^needhelp/', needhelp),
     url(r'^wannahelp/', wannahelp),
     url(r'^operator/', operator),
+    url(r'^shelter_list/', shelter_list),
 ]
