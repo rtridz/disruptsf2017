@@ -1,12 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-<<<<<<< HEAD
 # from affected.affected import *
 # from utilities import *
-=======
-from affected import *
-from utilities import *
->>>>>>> 9c2b14fcac531a6ac7543a04ac89afd6defb8aa4
 from urllib.request import urlopen
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -15,17 +10,11 @@ from django.views.generic import TemplateView
 from facebook import *
 from django.contrib.auth import authenticate
 import datetime
-from config import conf
-<<<<<<< HEAD
+# from config import conf
 from core.models import MyUser, MyUserManager, Shelter, HelpProvider
-=======
-from core.models import MyUser
-from core.models import Shelter
 from django.template import loader
 
 from core.models import MyUser, FacebookSession
-
->>>>>>> 9c2b14fcac531a6ac7543a04ac89afd6defb8aa4
 
 class indexView(TemplateView):
     template_name = "index.html"
