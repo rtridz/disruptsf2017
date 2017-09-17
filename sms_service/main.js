@@ -20,15 +20,12 @@ var app = Express();
 app.get('/incoming-sms', function(req, res){
     res.sendStatus(200);
 
-    response = msgManager.receiveMessage(req.query);
-    console.log(response)
-    if(response){
-        sendMesssage(response);
-    }
+    msgManager.receiveMessage(req.query, sendMesssage);
 });
 
 //Function to send a text message
 function sendMesssage(msg) {
+    console.log("Sending: " + msg);
     nexmo.message.sendSms("12016728472", "14086097335", msg);
 }
 

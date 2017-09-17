@@ -1,3 +1,6 @@
+var pos = require('pos');
+var request = require('request');
+
 module.exports = function () {
 
     var activeNumbers = {};
@@ -15,19 +18,19 @@ module.exports = function () {
 
      */
 
-    this.receiveMessage = function(newMessage) {
+    this.receiveMessage = function(newMessage, sendMesssage) {
         var number = newMessage.msisdn;
 
         if(number in activeNumbers){
             //Forward this message to the correct message handler
-            return activeNumbers[number].receiveMessage(newMessage)
+            activeNumbers[number].receiveMessage(newMessage, sendMesssage)
         }
         else{
             //Create new message handler
             var newUser = new UserSession(number);
             activeNumbers[number] = newUser;
 
-            return newUser.receiveMessage(newMessage);
+            newUser.receiveMessage(newMessage, sendMesssage);
         }
     }
 
@@ -40,24 +43,64 @@ var UserSession = function (number) {
     this.messageHistory = [];
     this.tree = conversationTree;
 
-    this.receiveMessage = function(newMessage){
+    this.receiveMessage = function(newMessage, sendMesssage){
         this.messageHistory.push(newMessage);
 
+        var messageText = newMessage.text;
         var response = "";
 
         //Parse within the conversation tree
-        for(var m in this.tree){
-            re = new RegExp(m.toLowerCase());
-            if(re.test(newMessage.text.toLowerCase())){
-                response = this.tree[m]["response"];
-                this.tree = this.tree[m]["tree"];
-            }
-        }
-
         if(Object.keys(this.tree).length == 0){
             this.tree = conversationTree;
         }
 
-        return response;
+        for(var m in this.tree){
+            re = new RegExp(m.toLowerCase());
+            if(re.test(messageText.toLowerCase())){
+                response = this.tree[m]["response"];
+                this.tree = this.tree[m]["tree"];
+                break;
+            }
+        }
+
+        if(response == "Help is on its way!"){
+            extractLatitudeLongitude(messageText, function (position) {
+                console.log(position);
+                response = "http://maps.google.com/maps?q=" + position.lat + "," + position.lon + " be safe";
+                sendMesssage(response);
+            });
+        }
+        else{
+            sendMesssage(response);
+        }
     }
+}
+
+function extractLatitudeLongitude(text, extractionComplete) {
+    text = text.toLowerCase();
+    text = " " + text;
+    text += " ";
+    text = text.replace(" i'm ", "")
+    var words = new pos.Lexer().lex(text);
+    var tagger = new pos.Tagger();
+    var taggedWords = tagger.tag(words);
+
+    var address = "";
+    for (i in taggedWords) {
+        var taggedWord = taggedWords[i];
+        var word = taggedWord[0];
+        var tag = taggedWord[1];
+        if(tag == "NN" || tag == "CD" || tag == "JJ"){
+            address += word + " ";
+        }
+    }
+    address = address.trim();
+    request('http://open.mapquestapi.com/nominatim/v1/search.php?key=UShjaMayAC4UkuBJ5nu5rqFuraxzEOQU&format=json&q=' + address.replace(" ", "+") + '+usa&addressdetails=1&limit=3&viewbox=-1.99%2C52.02%2C0.78%2C50.94&exclude_place_ids=41697', function (error, response, body) {
+        var jsonObject = JSON.parse(body);
+        if(jsonObject){
+            var lat = jsonObject[0].lat;
+            var lon = jsonObject[0].lon;
+            extractionComplete({"lat":lat, "lon":lon});
+        }
+    });
 }
