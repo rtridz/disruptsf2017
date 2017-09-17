@@ -1,24 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-# from affected.affected import *
-# from utilities import *
-from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import TemplateView
-from django.contrib.auth import authenticate
-import datetime
 from core.models import *
-from django.views.generic import TemplateView
-#from urllib.request import urlopen
-
 
 from facebook import *
 from core.affected.affected import get_affected_zone
 
 from django.contrib import auth
 from django.http import HttpResponseRedirect
-#import urllib.parse
-import urllib
-
 from core.models import Shelter, AssistanceTicket
 from disrupt2017 import settings
 
@@ -52,8 +40,8 @@ def login(request):
             }
 
 
-            url = 'https://graph.facebook.com/oauth/access_token?' #+ urllib.parse.urlencode(args)
-            webURL = None#urllib.request.urlopen(url)
+            url = 'https://graph.facebook.com/oauth/access_token?' + urllib.parse.urlencode(args)
+            webURL = urllib.request.urlopen(url)
             data = webURL.read()
             encoding = webURL.info().get_content_charset('utf-8')
             response=json.loads(data.decode(encoding))
