@@ -23,7 +23,7 @@
         var link = '<div class="shelter_popup">' +
                     '<div class="shelter_name"><a class="shelter_link" href="#{{ shelter.id }}">{{ shelter.shelter_name }}</a></div>' +
                     '<div class="shelter_count">[{{shelter.people_inside}} / {{shelter.max_capacity}}]</div>' +
-                    '<a href="#" class="i_need_help" id="shelter_need_help_popup-content" onclick='+"$('#shelter_need_help_popup').show();"+'>I need a help</a>' +
+                    '<a href="#" class="i_need_help" id="shelter_need_help_popup-content" onclick='+"$('#shelter_need_help_popup').show();"+'>Go there</a>' +
                     '<a href="#" class="i_want_help" id="shelter_want_help_popup-content" onclick='+"$('#shelter_want_help_popup').show();"+'>I want to help</a>' +
                     '</div>';
 
@@ -37,7 +37,6 @@
             symbol: '{{shelter.symbol }}'
           })
         }).bindPopup(link).addTo(map);
-{#        }).bindPopup().addTo(map);#}
 
 
         {% endfor %}
