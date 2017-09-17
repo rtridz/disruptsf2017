@@ -5,8 +5,7 @@
     "fields": {
       "username": "John",
       "email": "Lennon@gmail.com",
-      "password" : "blah",
-      "date_of_birth" : "2013-03-16"
+      "password" : "blah"
     }
   },
   {
@@ -15,8 +14,7 @@
     "fields": {
       "username": "Paul",
       "email": "mccartney@gmail.com",
-      "password" : "blah",
-      "date_of_birth" : "2013-03-16"
+      "password" : "blah"
     }
   },
    {

@@ -1,13 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from affected.affected import *
-from utilities import *
+# from affected.affected import *
+# from utilities import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate
 import datetime
-from config import conf
-from core.models import MyUser
+from core.models import *
 from urllib.request import urlopen
 
 
@@ -91,13 +90,16 @@ def needhelp(request, optional_form=None):
         request (TYPE): Description
     """
     #result = parse_and_identify(request)
+
+
     zone = get_affected_zone(request)
-    if zone is not None:
-        return render(request, 'victim_form.html')
-    else:
-        return render(request, 'victim_form.html')
+    # if zone is not None:
+    return render(request, 'victim_form.html', 
+                  {'shelter_id': request.GET['shelter_id']})
+    # else:
+    #     return render(request, 'victim_form.html')
         #return HttpResponse("need to know a bit of location")
-    pass
+
 
 def add_victim(request):
     """Summary
@@ -106,7 +108,24 @@ def add_victim(request):
         request (TYPE): Description
     """
     #print(key + " = " + request.POST[key])
-    print(request.POST.getlist('requirements'))
+    if request.POST:
+        user = MyUser.objects.create(
+            username=request.POST['name'],
+            password=request.POST['password'],
+            phone_number=request.POST['phone'],
+            email=request.POST['email'])
+        user.save()
+
+        shelter_ticket = ShelterTicket.objects.create(
+            user=user,
+            shelter=Shelter.objects.get(pk=int(request.POST['shelter_id'])),
+            connection_type=1)
+        shelter_ticket.save()
+
+        user = auth.authenticate(username=request.POST['name'], 
+                            password=request.POST['password'])
+        if user:
+            auth.login(request, user)
 
     return HttpResponse("<h1>Thanks for submitting your information. Here are some guidelines\
         for you</h1>")
