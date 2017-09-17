@@ -9,12 +9,12 @@
         L.mapquest.key = 'duaM3CgalvXJOrgqr0JRVPWsJn17jVmn';
 
         var map = L.mapquest.map('map', {
-          center: [0, 0],
+          center: [37, -119],
           layers: L.mapquest.tileLayer('map'),
-          zoom: 12
+          zoom: 5
         });
 
-        {% for shelter in shelter_list %}
+        {% for shelter in shelters %}
 
         L.marker([{{ shelter.location_lat }}, {{shelter.location_long}}], {
           icon: L.mapquest.icons.marker({
@@ -28,6 +28,20 @@
 
         {% endfor %}
 
+        {% for t in tickets %}
+
+        L.marker([{{ t.location_lat }}, {{t.location_long}}], {
+          icon: L.mapquest.icons.marker({
+            primaryColor: '#22407F',
+            secondaryColor: '#3B5998',
+            shadow: true,
+            size: 'md',
+            symbol: 'A'
+          })
+        }).bindPopup('{{ t.type_of_assistance }}').addTo(map);
+
+        {% endfor %}
+
         map.addControl(L.mapquest.control());
       }
     </script>
@@ -36,10 +50,21 @@
 </header>
 
 <body>
-    <div id="map" style="width: 100%; height: 530px;"></div>
     
+    <div style="width: 30%; height: 100%; float:right"> 
+    {% for s in shelters %}
+        <div> 
+            {{ s.shelter_name }}
+            <br/> {{ s.address }}
+            <br/>[{{s.people_inside}} / {{s.max_capacity}}]
+        </div>
+        <hr/>
+
+    {% endfor %}
+    </div>
+    <div id="map" style="width: 60%; height: 100%; float:left;"></div>
     
-    {{ shelter_list }}
+    <!-- {{ shelter_list }} -->
 </body>
 
 

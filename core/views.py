@@ -11,10 +11,8 @@ from facebook import *
 from django.contrib.auth import authenticate
 import datetime
 # from config import conf
-from core.models import MyUser, MyUserManager, Shelter, HelpProvider
+from core.models import *
 from django.template import loader
-
-from core.models import MyUser, FacebookSession
 
 class indexView(TemplateView):
     template_name = "index.html"
@@ -111,7 +109,11 @@ def shelter_list(request):
     # shelter.save()
 
     result = Shelter.objects.all()
-    return render(request, 'shelter_list.html', {'shelter_list': result})
+    return render(request, 'shelter_list.html', 
+                  {
+                    'shelters': Shelter.objects.all(),
+                    'tickets': AssistanceTicket.objects.all()
+                  })
 
 def shelters_map(request):
     shelters_list = Shelter.objects
