@@ -1,60 +1,77 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from affected.affected import *
-from utilities import *
-#from urllib.request import urlopen
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
 from django.views.generic import TemplateView
-#from facebook import *
-from django.contrib.auth import authenticate
-import datetime
-from config import conf
-from core.models import MyUser
-
-class indexView(TemplateView):
-    template_name = "index.html"
-
-    def index_view(self, *args, **kwargs):
-            response = HttpResponse('')
-            return response
+from urllib.request import urlopen
 
 
-'''
-def facebookReturn(request):
-    code = request.GET.get('code')
+from facebook import *
+from core.affected.affected import get_affected_zone
 
-    site=urlopen("https://graph.facebook.com/oauth/access_token?client_id=" + str(conf.facevook_id) + "&redirect_uri=http://localhost:8000/facebookreturn&client_secret=" + str(conf.facevook_id) + "&code=%s#_=_" % code)
+from django.contrib import auth
+from django.http import HttpResponseRedirect
+import urllib.parse
+import urllib
 
-    site = site.replace("access_token=", '')
-    m = site.find('&expires=')
-    site = site[0:m]
+from core.models import Shelter, AssistanceTicket
+from disrupt2017 import settings
 
-    ##this is the API call that uses the facebook module to get the user data
-    graph = GraphAPI(site)
-    profile = graph.get_object("me")
-    facebook_id = profile.get('id')
-    username = profile.get('username')
-    email = profile.get('email')
-    name = profile.get('name')
-    birthday = profile.get('birthday')
-    birthday = datetime.datetime.strptime(birthday, '%m/%d/%Y').strftime('%Y-%m-%d')
-    gender = profile.get('gender')
-    link = profile.get('link')
-    try:
-        ##this checks if the user is registered on the system, if so it authenticates the user, if not it creates the user
-        user = MyUser.objects.get(email=email)
-        user = authenticate(username=email, password=facebook_id)
-        return HttpResponse('this users email address is %s' % user)
-    except ObjectDoesNotExist:
-        New_user = MyUser.objects.create_user(email=email, date_of_birth=birthday, password=facebook_id,
-                                              facebook_id=facebook_id, link=link, name=name, gender=gender,
-                                              username=username)
-        return HttpResponse(
-            "facebook id %s\n, username %s\n, email %s\n, name %s\n, birthday %s\n, gender %s\n, link %s" % (
-            facebook_id, username, email, name, birthday, gender, link))
-'''
-def needhelp(request):
+
+
+
+def indexView(request):
+    error = None
+
+    template_context = {'settings': settings, 'error': error,
+                        'shelters': Shelter.objects.all(),
+                        'tickets': AssistanceTicket.objects.all()
+                        }
+
+    return render(request, 'index.html', template_context)
+
+
+def login(request):
+    error = None
+
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
+    if request.GET:
+        if 'code' in request.GET:
+            args = {
+                'client_id': settings.FACEBOOK_APP_ID,
+                'redirect_uri': settings.FACEBOOK_REDIRECT_URI,
+                'client_secret': settings.FACEBOOK_API_SECRET,
+                'code': request.GET['code'],
+            }
+
+
+            url = 'https://graph.facebook.com/oauth/access_token?' + urllib.parse.urlencode(args)
+            webURL = urllib.request.urlopen(url)
+            data = webURL.read()
+            encoding = webURL.info().get_content_charset('utf-8')
+            response=json.loads(data.decode(encoding))
+
+            access_token = response['access_token']
+            expires = response['expires_in']
+
+
+            user = auth.authenticate(token=access_token, expires=expires)
+            if user:
+                if user.is_active:
+                    auth.login(request, user)
+                    return HttpResponseRedirect('/')
+                else:
+                    error = 'AUTH_DISABLED'
+            else:
+                error = 'AUTH_FAILED'
+        elif 'error_reason' in request.GET:
+            error = 'AUTH_DENIED'
+
+    template_context = {'settings': settings, 'error': error}
+    return render(request, 'blocks/templates/pages/login_page.html', template_context)
+
+
+def needhelp(request, optional_form=None):
     """Summary
     
     Args:
@@ -105,7 +122,7 @@ def operator(request):
     Args:
         request (TYPE): Description
     """
-    pass
+    return
 
 def viewer(request):
     """Summary
