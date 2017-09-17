@@ -28,4 +28,7 @@ urlpatterns = [
     url(r'^needhelp/', needhelp),
     url(r'^wannahelp/', wannahelp),
     url(r'^operator/', operator),
+    url(r'^(?P<shelter_id>[0-9]+)/$', views.shelter_info, name='shelter_detail'),
+    url(r'^shelters/', views.shelters_map, name='shelter_map')
+
 ]
