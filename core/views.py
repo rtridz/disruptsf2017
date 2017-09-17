@@ -1,14 +1,8 @@
-from urllib.request import urlopen
-
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
-from facebook import *
-from django.contrib.auth import authenticate
-import datetime
-from config import conf
-from core.models import MyUser
+from core.models import MyUser, FacebookSession
+
 
 class indexView(TemplateView):
     template_name = "index.html"
@@ -18,40 +12,60 @@ class indexView(TemplateView):
             return response
 
 
+from django.contrib import auth
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response, render
+from django.template import RequestContext
 
-def facebookReturn(request):
-    code = request.GET.get('code')
+import cgi
+import simplejson
+import urllib
+from disrupt2017 import settings
 
-    site=urlopen("https://graph.facebook.com/oauth/access_token?client_id=" + str(conf.facevook_id) + "&redirect_uri=http://localhost:8000/facebookreturn&client_secret=" + str(conf.facevook_id) + "&code=%s#_=_" % code)
 
-    site = site.replace("access_token=", '')
-    m = site.find('&expires=')
-    site = site[0:m]
+def login(request):
+    error = None
 
-    ##this is the API call that uses the facebook module to get the user data
-    graph = GraphAPI(site)
-    profile = graph.get_object("me")
-    facebook_id = profile.get('id')
-    username = profile.get('username')
-    email = profile.get('email')
-    name = profile.get('name')
-    birthday = profile.get('birthday')
-    birthday = datetime.datetime.strptime(birthday, '%m/%d/%Y').strftime('%Y-%m-%d')
-    gender = profile.get('gender')
-    link = profile.get('link')
-    try:
-        ##this checks if the user is registered on the system, if so it authenticates the user, if not it creates the user
-        user = MyUser.objects.get(email=email)
-        user = authenticate(username=email, password=facebook_id)
-        return HttpResponse('this users email address is %s' % user)
-    except ObjectDoesNotExist:
-        New_user = MyUser.objects.create_user(email=email, date_of_birth=birthday, password=facebook_id,
-                                              facebook_id=facebook_id, link=link, name=name, gender=gender,
-                                              username=username)
-        return HttpResponse(
-            "facebook id %s\n, username %s\n, email %s\n, name %s\n, birthday %s\n, gender %s\n, link %s" % (
-            facebook_id, username, email, name, birthday, gender, link))
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/yay/')
 
+    if request.GET:
+        if 'code' in request.GET:
+            args = {
+                'client_id': settings.FACEBOOK_APP_ID,
+                'redirect_uri': settings.FACEBOOK_REDIRECT_URI,
+                'client_secret': settings.FACEBOOK_API_SECRET,
+                'code': request.GET['code'],
+            }
+
+            url = 'https://graph.facebook.com/oauth/access_token?' + \
+                    urllib.urlencode(args)
+            response = cgi.parse_qs(urllib.urlopen(url).read())
+            access_token = response['access_token'][0]
+            expires = response['expires'][0]
+
+            facebook_session = FacebookSession.objects.get_or_create(
+                access_token=access_token,
+            )[0]
+
+            facebook_session.expires = expires
+            facebook_session.save()
+
+            user = auth.authenticate(token=access_token)
+            if user:
+                if user.is_active:
+                    auth.login(request, user)
+                    return HttpResponseRedirect('/index')
+                else:
+                    error = 'AUTH_DISABLED'
+            else:
+                error = 'AUTH_FAILED'
+        elif 'error_reason' in request.GET:
+            error = 'AUTH_DENIED'
+
+    template_context = {'settings': settings, 'error': error}
+
+    return render(request, 'blocks/facebook.html', template_context)
 
 def needhelp(request):
     """Summary

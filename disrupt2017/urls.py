@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     url(r'^index/', indexView.as_view()), #template_name='index.html'
-    url(r"^facebookreturn/$", facebookReturn),
+    url(r"^login/$", login),
 
     url(r'^needhelp/', needhelp),
     url(r'^wannahelp/', wannahelp),

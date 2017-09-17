@@ -3,6 +3,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
+from django.db import models
+from django.contrib.auth.models import User
+
+
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, password, facebook_id, link, name, gender, username):
@@ -106,6 +110,48 @@ class MyUser(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
+class FacebookSessionError(Exception):
+    def __init__(self, error_type, message):
+        self.message = message
+        self.type = error_type
+
+    def get_message(self):
+        return self.message
+
+    def get_type(self):
+        return self.type
+
+    def __unicode__(self):
+        return u'%s: "%s"' % (self.type, self.message)
+
+class FacebookSession(models.Model):
+    access_token = models.CharField(max_length=103, unique=True)
+    expires = models.IntegerField(null=True)
+
+    user = models.ForeignKey(MyUser, null=True)
+    uid = models.BigIntegerField(unique=True, null=True)
+
+    class Meta:
+        unique_together = (('user', 'uid'), ('access_token', 'expires'))
+
+    def query(self, object_id, connection_type=None, metadata=False):
+        import urllib
+        import simplejson
+
+        url = 'https://graph.facebook.com/%s' % (object_id)
+        if connection_type:
+            url += '/%s' % (connection_type)
+
+        params = {'access_token': self.access_token}
+        if metadata:
+            params['metadata'] = 1
+
+        url += '?' + urllib.urlencode(params)
+        response = simplejson.load(urllib.urlopen(url))
+        if 'error' in response:
+            error = response['error']
+            raise FacebookSessionError(error['type'], error['message'])
+        return response
 
 
 #
@@ -120,77 +166,77 @@ class MyUser(AbstractBaseUser):
 #     location_long = models.FloatField()
 #
 #
-
-class HelpProvider(models.Model):
-    orgname = models.CharField(max_length=50)
-
-
-class Shelter(models.Model):
-    provider = models.ForeignKey(HelpProvider, on_delete=models.CASCADE)
-    shelter_name = models.CharField(max_length=50)
-    location_lat = models.FloatField()
-    location_long = models.FloatField()
-    address = models.CharField(max_length=100)
-    max_capacity = models.IntegerField()
-    people_inside = models.IntegerField()
-    people_coming = models.IntegerField()
-
-
-class Affected(MyUser):
-    assosicated_shelter = models.ForeignKey(Shelter)
-    GOING_TO = 1
-    SIGNED_IN = 2
-    TYPE_CHOICES = (
-        (GOING_TO, 'Going to'),
-        (SIGNED_IN, 'Signed in'),
-    )
-    connection_type = models.IntegerField(choices=TYPE_CHOICES)
-
-
-
-
-class AssistanceTicket(models.Model):
-    user_created = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    date_created = models.DateField()
-    type_of_assistance = models.TextField()
-
-    date_needed = models.DateField()
-
-    CRITICAL = 1
-    URGENT = 2
-    NORMAL = 3
-    DESIRABLE = 4
-    STATUS_CHOICES = (
-        (CRITICAL, 'Critical'),
-        (URGENT, 'Urgent'),
-        (NORMAL, 'Normal'),
-        (DESIRABLE, 'Desirable')
-    )
-    status = models.IntegerField(choices=STATUS_CHOICES, default=NORMAL)
-
-
-class AssistanceTicketReaction(models.Model):
-    ticket = models.ForeignKey(AssistanceTicket)
-    person_reacted = models.ForeignKey(MyUser)
-
-
-class GoodsDemands(models.Model):
-    FOOD = 1
-    WATER = 2
-    BLANKET = 3
-    PAIN_KILLER = 4
-    SEDATIVE = 5
-    GOODS_TYPES = (
-        (FOOD, 'food pack'),
-        (WATER, 'water pack (2l)'),
-        (BLANKET, 'blanket'),
-        (PAIN_KILLER, 'pain killer'),
-        (SEDATIVE, "sedative")
-    )
-    good_type = models.IntegerField(choices=GOODS_TYPES)
-    qty = models.IntegerField()
-    who_demands = models.ForeignKey(MyUser)
-    shelter = models.ForeignKey(Shelter)
+#
+# class HelpProvider(models.Model):
+#     orgname = models.CharField(max_length=50)
+#
+#
+# class Shelter(models.Model):
+#     provider = models.ForeignKey(HelpProvider, on_delete=models.CASCADE)
+#     shelter_name = models.CharField(max_length=50)
+#     location_lat = models.FloatField()
+#     location_long = models.FloatField()
+#     address = models.CharField(max_length=100)
+#     max_capacity = models.IntegerField()
+#     people_inside = models.IntegerField()
+#     people_coming = models.IntegerField()
+#
+#
+# class Affected(MyUser):
+#     assosicated_shelter = models.ForeignKey(Shelter)
+#     GOING_TO = 1
+#     SIGNED_IN = 2
+#     TYPE_CHOICES = (
+#         (GOING_TO, 'Going to'),
+#         (SIGNED_IN, 'Signed in'),
+#     )
+#     connection_type = models.IntegerField(choices=TYPE_CHOICES)
+#
+#
+#
+#
+# class AssistanceTicket(models.Model):
+#     user_created = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+#     date_created = models.DateField()
+#     type_of_assistance = models.TextField()
+#
+#     date_needed = models.DateField()
+#
+#     CRITICAL = 1
+#     URGENT = 2
+#     NORMAL = 3
+#     DESIRABLE = 4
+#     STATUS_CHOICES = (
+#         (CRITICAL, 'Critical'),
+#         (URGENT, 'Urgent'),
+#         (NORMAL, 'Normal'),
+#         (DESIRABLE, 'Desirable')
+#     )
+#     status = models.IntegerField(choices=STATUS_CHOICES, default=NORMAL)
+#
+#
+# class AssistanceTicketReaction(models.Model):
+#     ticket = models.ForeignKey(AssistanceTicket)
+#     person_reacted = models.ForeignKey(MyUser)
+#
+#
+# class GoodsDemands(models.Model):
+#     FOOD = 1
+#     WATER = 2
+#     BLANKET = 3
+#     PAIN_KILLER = 4
+#     SEDATIVE = 5
+#     GOODS_TYPES = (
+#         (FOOD, 'food pack'),
+#         (WATER, 'water pack (2l)'),
+#         (BLANKET, 'blanket'),
+#         (PAIN_KILLER, 'pain killer'),
+#         (SEDATIVE, "sedative")
+#     )
+#     good_type = models.IntegerField(choices=GOODS_TYPES)
+#     qty = models.IntegerField()
+#     who_demands = models.ForeignKey(MyUser)
+#     shelter = models.ForeignKey(Shelter)
 
 
 # ============Managers===============
