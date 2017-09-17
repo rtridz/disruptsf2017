@@ -3,19 +3,15 @@ from django.http import HttpResponse
 
 
 from facebook import *
-from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as auth_login
-
-from core import models
 from core.affected.affected import get_affected_zone
-from core.models import MyUser
 
 from django.contrib import auth
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import urllib.parse
 import urllib
+
+from core.models import Shelter, AssistanceTicket
 from disrupt2017 import settings
 
 
@@ -73,7 +69,7 @@ def login(request):
     return render(request, 'blocks/facebook.html', template_context)
 
 
-def needhelp(request):
+def needhelp(request, optional_form=None):
     """Summary
     
     Args:
@@ -122,19 +118,8 @@ def shelter_list(request):
     # shelter.save()
 
     result = Shelter.objects.all()
-    return render(request, 'shelter_list.html',
+    return render(request, 'pages/shelter_list.html',
                   {
                     'shelters': Shelter.objects.all(),
                     'tickets': AssistanceTicket.objects.all()
                   })
-
-def shelters_map(request):
-    shelters_list = Shelter.objects
-    template = loader.get_template('shelters_map.html')
-    context = {
-        'shelters_list': shelters_list,
-    }
-    return HttpResponse(template.render(context, request))
-
-def shelter_info(request, shelter_id):
-    return HttpResponse("You're looking at shelter %s." % shelter_id)
