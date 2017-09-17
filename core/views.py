@@ -80,7 +80,7 @@ def login(request):
 
 def needhelp(request, optional_form=None):
     """Summary
-    
+
     Args:
         request (TYPE): Description
     """
