@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth import authenticate
 import datetime
 from core.models import *
+from django.views.generic import TemplateView
 from urllib.request import urlopen
 
 
@@ -23,18 +24,14 @@ from disrupt2017 import settings
 
 
 
-class indexView(TemplateView):
-    template_name = "index.html"
 
-    def index_view(self, *args, **kwargs):
-            response = HttpResponse('')
-            return response
-
-
-def index_view(request):
+def indexView(request):
     error = None
 
-    template_context = {'settings': settings, 'error': error}
+    template_context = {'settings': settings, 'error': error,
+                        'shelters': Shelter.objects.all(),
+                        'tickets': AssistanceTicket.objects.all()
+                        }
 
     return render(request, 'index.html', template_context)
 
@@ -61,8 +58,6 @@ def login(request):
             encoding = webURL.info().get_content_charset('utf-8')
             response=json.loads(data.decode(encoding))
 
-            print(response)
-
             access_token = response['access_token']
             expires = response['expires_in']
 
@@ -80,7 +75,7 @@ def login(request):
             error = 'AUTH_DENIED'
 
     template_context = {'settings': settings, 'error': error}
-    return render(request, 'blocks/facebook.html', template_context)
+    return render(request, 'blocks/templates/pages/login_page.html', template_context)
 
 
 def needhelp(request, optional_form=None):
@@ -153,20 +148,3 @@ def viewer(request):
         request (TYPE): Description
     """
     pass
-
-
-def shelter_list(request):
-
-    # help_provider = HelpProvider.objects.all()[]
-
-    # shelter = Shelter(provider=help_provider, shelter_name='test',
-    #     location_long=0, location_lat=0, address='', max_capacity=1,
-    #     people_inside=1, people_coming=1)
-    # shelter.save()
-
-    result = Shelter.objects.all()
-    return render(request, 'pages/shelter_list.html',
-                  {
-                    'shelters': Shelter.objects.all(),
-                    'tickets': AssistanceTicket.objects.all()
-                  })

@@ -1,0 +1,7 @@
+{
+  ".*help.*":{"response":"Help is on its way!", "tree":{}},
+  ".*":{"response":"Do you need help", "tree":{
+    "Yes":{"response":"Help will be there soon", "tree":{}},
+    "No":{"response":"Ok, have a nice day", "tree":{}}
+  }}
+}
