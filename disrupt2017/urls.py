@@ -27,6 +27,8 @@ urlpatterns = [
     url(r'^$', indexView),
     url(r"^login/$", login),
     url(r'^needhelp/', needhelp),
+    url(r'^emergency_help/', emergency_help),
+    url(r'^get_tickets/', get_tickets),
     # url(r'^wannahelp/', wannahelp),
     # url(r'^operator/', operator),
     # url(r'^(?P<shelter_id>[0-9]+)/$', views.shelter_info, name='shelter_detail'),

@@ -181,13 +181,16 @@ class ShelterTicket(models.Model):
 
 
 class AssistanceTicket(models.Model):
-    user_created = models.ForeignKey(MyUser, blank=True, null=True)
+    #user_created = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    #date_created = models.DateField()
+    #date_needed = models.DateField()
+    phone_number = models.CharField(max_length=11)
     date_created = models.DateField(auto_now_add=True)
     date_needed = models.DateField(auto_now_add=True)
     type_of_assistance = models.TextField()
     location_lat = models.FloatField()
     location_long = models.FloatField()
-    
+    selected = models.BooleanField(default=False)
 
     CRITICAL = 1
     URGENT = 2

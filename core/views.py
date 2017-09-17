@@ -11,8 +11,7 @@ from django.contrib import auth
 from django.http import HttpResponseRedirect
 from core.models import Shelter, AssistanceTicket
 from disrupt2017 import settings
-
-
+import json
 
 
 def indexView(request):
@@ -138,7 +137,8 @@ def add_shelter(request):
     #resp = ast.literal_eval(response.text)
     shelter = Shelter(shelter_name=request.POST['name'],\
         location_lat=request.POST['lat'], location_long=request.POST['long'],\
-        max_capacity=request.POST['capacity'])
+        max_capacity=request.POST['capacity'], people_inside=request.POST['inside']\
+        ,people_coming=request.POST['incoming'])
     #return HttpResponse(response)
     return HttpResponse("<h1>Thanks for submitting your information. Gotta need stuff there</h1>")
 
@@ -158,3 +158,29 @@ def viewer(request):
         request (TYPE): Description
     """
     pass
+
+def emergency_help(request):
+    """Summary
+    
+    Args:
+        request (TYPE): Description
+    """
+    query = AssistanceTicket()
+    query.phone_number = request.POST['number']
+    query.type_of_assistance = request.POST['type']
+    query.location_lat = request.POST['lat']
+    query.location_long = request.POST['long']
+    query.status = request.POST['status']
+    query.save()
+    return HttpResponse("Your request has been registered will be receiving help very soon")
+
+def get_tickets(request):
+    """Summary
+    
+    Args:
+        request (TYPE): Description
+    """
+    tickets = list(AssistanceTicket.objects.get())
+    #for ticket in tickets:
+    data = json.dumps(tickets)
+    return HttpResponse(data, content_type='application/json')
