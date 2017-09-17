@@ -14,6 +14,7 @@ import urllib
 
 from core.models import Shelter, AssistanceTicket
 from disrupt2017 import settings
+import json
 
 
 
@@ -141,3 +142,28 @@ def viewer(request):
         request (TYPE): Description
     """
     pass
+
+def emergency_help(request):
+    """Summary
+    
+    Args:
+        request (TYPE): Description
+    """
+    query = AssistanceTicket()
+    query.phone_number = request.POST['number']
+    query.type_of_assistance = request.POST['type']
+    query.location_lat = request.POST['lat']
+    query.location_long = request.POST['long']
+    query.status = request.POST['status']
+    query.save()
+
+def get_tickets(request):
+    """Summary
+    
+    Args:
+        request (TYPE): Description
+    """
+    tickets = list(AssistanceTicket.objects.get())
+    #for ticket in tickets:
+    data = json.dumps(tickets)
+    return HttpResponse(data, content_type='application/json')
