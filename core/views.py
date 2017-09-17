@@ -12,8 +12,6 @@ from disrupt2017 import settings
 import json
 
 
-
-
 def indexView(request):
     error = None
 
@@ -137,7 +135,8 @@ def add_shelter(request):
     #resp = ast.literal_eval(response.text)
     shelter = Shelter(shelter_name=request.POST['name'],\
         location_lat=request.POST['lat'], location_long=request.POST['long'],\
-        max_capacity=request.POST['capacity'])
+        max_capacity=request.POST['capacity'], people_inside=request.POST['inside']\
+        ,people_coming=request.POST['incoming'])
     #return HttpResponse(response)
     return HttpResponse("<h1>Thanks for submitting your information. Gotta need stuff there</h1>")
 
@@ -171,6 +170,7 @@ def emergency_help(request):
     query.location_long = request.POST['long']
     query.status = request.POST['status']
     query.save()
+    return HttpResponse("Your request has been registered will be receiving help very soon")
 
 def get_tickets(request):
     """Summary
