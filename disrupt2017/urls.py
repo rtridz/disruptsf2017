@@ -21,6 +21,9 @@ urlpatterns = [
 
     url(r'^admin/', admin.site.urls),
     url(r'^needhelp/submit$', add_victim),
+    url(r'^wannahelp/$', wannahelp),
+    url(r'^wannahelp/submit$', add_shelter),
+    url(r'^operator/', operator),
     url(r'^$', indexView),
     url(r"^login/$", login),
     url(r'^needhelp/', needhelp),

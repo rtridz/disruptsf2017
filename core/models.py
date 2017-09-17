@@ -48,7 +48,7 @@ class FacebookSession(models.Model):
         if metadata:
             params['metadata'] = 1
 
-        url += '?' + urllib.parse.urlencode(params)
+        url += '?' #+ urllib.parse.urlencode(params)
         webURL = urllib.request.urlopen(url)
         data = webURL.read()
         encoding = webURL.info().get_content_charset('utf-8')
@@ -78,14 +78,14 @@ class HelpProvider(models.Model):
 
 
 class Shelter(models.Model):
-    provider = models.ForeignKey(HelpProvider, on_delete=models.CASCADE)
+    #provider = models.ForeignKey(HelpProvider, on_delete=models.CASCADE)
     shelter_name = models.CharField(max_length=50)
     location_lat = models.FloatField()
     location_long = models.FloatField()
-    address = models.CharField(max_length=100)
+    #address = models.CharField(max_length=100)
     max_capacity = models.IntegerField()
-    people_inside = models.IntegerField()
-    people_coming = models.IntegerField()
+    #people_inside = models.IntegerField()
+    #people_coming = models.IntegerField()
 
 
 class ShelterTicket(models.Model):
