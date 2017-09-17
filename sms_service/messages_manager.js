@@ -67,7 +67,15 @@ var UserSession = function (number) {
             extractLatitudeLongitude(messageText, function (position) {
                 console.log(position);
                 response = "http://maps.google.com/maps?q=" + position.lat + "," + position.lon;
-                sendMesssage(response);
+
+                request({
+                    headers: {'content-type' : 'application/x-www-form-urlencoded'},
+                    url:     'http://localhost:8000/emergency_help/',
+                    body:    "number='1'&type='brokeleg'&lat="+position.lat+"&long="+position.lon+"&status=2"
+                }, function (error, response, body) {
+                    sendMesssage(response);
+                }
+                );
             });
         }
         else{
