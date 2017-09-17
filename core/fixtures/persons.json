@@ -39,9 +39,9 @@
     "fields": {
       "provider" : 1,
     "shelter_name" : "Shelter #1",
-    "location_lat" : 10,
-    "location_long" : 10,
-    "address" : "10 blah street San fran",
+    "location_lat" : 32.916023,
+    "location_long" : -117.128966,
+    "address" : "9051 Mira Mesa Blvd, San Diego, CA 92126",
     "max_capacity" : 3000,
     "people_inside" :0,
     "people_coming" :1
@@ -53,9 +53,9 @@
     "fields": {
       "provider" : 2,
     "shelter_name" : "Shelter #100500",
-    "location_lat" : 20,
-    "location_long" : 20,
-    "address" : "125 blah street San fran",
+    "location_lat" : 32.926443,
+    "location_long" : -117.149739,
+    "address" : "11230 Avenida Del Gato, San Diego, CA 92126, USA",
     "max_capacity" : 2000,
     "people_inside" :0,
     "people_coming" :0
