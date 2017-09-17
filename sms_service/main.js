@@ -18,8 +18,13 @@ var nexmo = new Nexmo({
 var app = Express();
 
 app.get('/incoming-sms', function(req, res){
-    msgManager.receiveMessage(req.query);
     res.sendStatus(200);
+
+    response = msgManager.receiveMessage(req.query);
+    console.log(response)
+    if(response){
+        sendMesssage(response);
+    }
 });
 
 //Function to send a text message

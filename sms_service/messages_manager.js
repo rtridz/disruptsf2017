@@ -16,29 +16,48 @@ module.exports = function () {
      */
 
     this.receiveMessage = function(newMessage) {
-        var number = newMessage.to;
+        var number = newMessage.msisdn;
 
         if(number in activeNumbers){
             //Forward this message to the correct message handler
-            activeNumbers[number].receiveMessage(newMessage)
+            return activeNumbers[number].receiveMessage(newMessage)
         }
         else{
             //Create new message handler
             var newUser = new UserSession(number);
-            newUser.receiveMessage(newMessage);
             activeNumbers[number] = newUser;
+
+            return newUser.receiveMessage(newMessage);
         }
     }
 
 }
 
+var conversationTree = require('./conversation_tree');
+
 var UserSession = function (number) {
     this.number = number;
     this.messageHistory = [];
-    console.log("New number!")
+    this.tree = conversationTree;
 
     this.receiveMessage = function(newMessage){
-        console.log("message received")
         this.messageHistory.push(newMessage);
+
+        var response = "";
+
+        //Parse within the conversation tree
+        for(var m in this.tree){
+            re = new RegExp(m.toLowerCase());
+            if(re.test(newMessage.text.toLowerCase())){
+                response = this.tree[m]["response"];
+                this.tree = this.tree[m]["tree"];
+            }
+        }
+
+        if(Object.keys(this.tree).length == 0){
+            this.tree = conversationTree;
+        }
+
+        return response;
     }
 }
