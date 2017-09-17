@@ -17,7 +17,7 @@
         {% for shelter in shelters %}
 
         L.marker([{{ shelter.location_lat }}, {{shelter.location_long}}], {
-          icon: L.mapquest.icons.marker({
+          icon: L.mapquest.icons.circle({
             primaryColor: '#22407F',
             secondaryColor: '#3B5998',
             shadow: true,
