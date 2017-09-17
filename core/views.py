@@ -1,8 +1,14 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+<<<<<<< HEAD
 # from affected.affected import *
 # from utilities import *
+=======
+from affected import *
+from utilities import *
+>>>>>>> 9c2b14fcac531a6ac7543a04ac89afd6defb8aa4
 from urllib.request import urlopen
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views.generic import TemplateView
@@ -10,7 +16,16 @@ from facebook import *
 from django.contrib.auth import authenticate
 import datetime
 from config import conf
+<<<<<<< HEAD
 from core.models import MyUser, MyUserManager, Shelter, HelpProvider
+=======
+from core.models import MyUser
+from core.models import Shelter
+from django.template import loader
+
+from core.models import MyUser, FacebookSession
+
+>>>>>>> 9c2b14fcac531a6ac7543a04ac89afd6defb8aa4
 
 class indexView(TemplateView):
     template_name = "index.html"
@@ -20,6 +35,10 @@ class indexView(TemplateView):
             return response
 
 
+from django.contrib import auth
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response, render
+from django.template import RequestContext
 
 def facebookReturn(request):
     code = request.GET.get('code')
@@ -92,15 +111,27 @@ def viewer(request):
     """
     pass
 
+<<<<<<< HEAD
 
 def shelter_list(request):
 
-    help_provider = HelpProvider.objects.get(id=1)
+    # help_provider = HelpProvider.objects.all()[]
 
     # shelter = Shelter(provider=help_provider, shelter_name='test',
     #     location_long=0, location_lat=0, address='', max_capacity=1,
     #     people_inside=1, people_coming=1)
     # shelter.save()
 
-    result = Shelter.objects.filter(provider=help_provider).all()
+    result = Shelter.objects.all()
     return render(request, 'shelter_list.html', {'shelter_list': result})
+
+def shelters_map(request):
+    shelters_list = Shelter.objects
+    template = loader.get_template('shelters_map.html')
+    context = {
+        'shelters_list': shelters_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+def shelter_info(request, shelter_id):
+    return HttpResponse("You're looking at shelter %s." % shelter_id)
