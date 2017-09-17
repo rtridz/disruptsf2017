@@ -1,3 +1,6 @@
+from urllib.request import urlopen
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
@@ -73,6 +76,12 @@ def needhelp(request):
     Args:
         request (TYPE): Description
     """
+    #result = parse_and_identify(request)
+    zone = get_affected_zone(request)
+    if zone is not None:
+        return optional_form
+    else:
+        return HttpResponse("need to know a bit of location")
     pass
 
 def wannahelp(request):
@@ -98,3 +107,4 @@ def viewer(request):
         request (TYPE): Description
     """
     pass
+
