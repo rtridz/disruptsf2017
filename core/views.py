@@ -1,5 +1,14 @@
-from urllib.request import urlopen
 from django.http import HttpResponse
+from django.shortcuts import render
+from affected.affected import *
+from utilities import *
+from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic import TemplateView
+from django.contrib.auth import authenticate
+import datetime
+from config import conf
+from core.models import MyUser
+from urllib.request import urlopen
 
 
 from facebook import *
@@ -7,7 +16,6 @@ from core.affected.affected import get_affected_zone
 
 from django.contrib import auth
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 import urllib.parse
 import urllib
 
@@ -15,6 +23,13 @@ from core.models import Shelter, AssistanceTicket
 from disrupt2017 import settings
 
 
+
+class indexView(TemplateView):
+    template_name = "index.html"
+
+    def index_view(self, *args, **kwargs):
+            response = HttpResponse('')
+            return response
 
 
 def index_view(request):
@@ -78,10 +93,23 @@ def needhelp(request, optional_form=None):
     #result = parse_and_identify(request)
     zone = get_affected_zone(request)
     if zone is not None:
-        return optional_form
+        return render(request, 'victim_form.html')
     else:
-        return HttpResponse("need to know a bit of location")
+        return render(request, 'victim_form.html')
+        #return HttpResponse("need to know a bit of location")
     pass
+
+def add_victim(request):
+    """Summary
+    
+    Args:
+        request (TYPE): Description
+    """
+    #print(key + " = " + request.POST[key])
+    print(request.POST.getlist('requirements'))
+
+    return HttpResponse("<h1>Thanks for submitting your information. Here are some guidelines\
+        for you</h1>")
 
 def wannahelp(request):
     """Summary
