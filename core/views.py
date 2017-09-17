@@ -87,7 +87,17 @@ def wannahelp(request):
     Args:
         request (TYPE): Description
     """
-    pass
+    return render(request, 'wanna_help.html')
+
+def add_shelter(request):
+    """Summary
+    
+    Args:
+        request (TYPE): Description
+    """
+    for key in request.POST.keys():
+        print(key + ' = ' + request.POST[key])
+    return HttpResponse("<h1>Thanks for submitting your information. Gotta need stuff there</h1>")
 
 def operator(request):
     """Summary

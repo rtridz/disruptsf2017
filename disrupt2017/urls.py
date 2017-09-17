@@ -25,6 +25,7 @@ urlpatterns = [
     #url(r"^facebookreturn/$", facebookReturn),
     url(r'^needhelp/$', needhelp),
     url(r'^needhelp/submit$', add_victim),
-    url(r'^wannahelp/', wannahelp),
+    url(r'^wannahelp/$', wannahelp),
+    url(r'^wannahelp/submit$', add_shelter),
     url(r'^operator/', operator),
 ]
