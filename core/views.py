@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from urllib.request import urlopen
+#from urllib.request import urlopen
 
 
 from facebook import *
@@ -9,7 +9,7 @@ from core.affected.affected import get_affected_zone
 
 from django.contrib import auth
 from django.http import HttpResponseRedirect
-import urllib.parse
+#import urllib.parse
 import urllib
 
 from core.models import Shelter, AssistanceTicket
@@ -45,8 +45,8 @@ def login(request):
             }
 
 
-            url = 'https://graph.facebook.com/oauth/access_token?' + urllib.parse.urlencode(args)
-            webURL = urllib.request.urlopen(url)
+            url = 'https://graph.facebook.com/oauth/access_token?' #+ urllib.parse.urlencode(args)
+            webURL = None#urllib.request.urlopen(url)
             data = webURL.read()
             encoding = webURL.info().get_content_charset('utf-8')
             response=json.loads(data.decode(encoding))
@@ -104,7 +104,7 @@ def wannahelp(request):
     Args:
         request (TYPE): Description
     """
-    return render(request, 'wanna_help.html')
+    return render(request, 'wanna_help_1.html')
 
 def add_shelter(request):
     """Summary
@@ -112,9 +112,19 @@ def add_shelter(request):
     Args:
         request (TYPE): Description
     """
+    #Get provider
     for key in request.POST.keys():
         print(key + ' = ' + request.POST[key])
+    #url = 'http://open.mapquestapi.com/nominatim/v1/search.php?key=gowXM2f6C16NEmCvkFMehr5gpfnAjDPI&format=json&q='
+    #query = '+'.join(request.POST['address'].split())
+    #response = requests.get(url+query)
+    #resp = ast.literal_eval(response.text)
+    shelter = Shelter(shelter_name=request.POST['name'],\
+        location_lat=request.POST['lat'], location_long=request.POST['long'],\
+        max_capacity=request.POST['capacity'])
+    #return HttpResponse(response)
     return HttpResponse("<h1>Thanks for submitting your information. Gotta need stuff there</h1>")
+
 
 def operator(request):
     """Summary
