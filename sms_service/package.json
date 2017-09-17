@@ -18,5 +18,11 @@
   "bugs": {
     "url": "https://github.com/rtridz/disruptsf2017/issues"
   },
-  "homepage": "https://github.com/rtridz/disruptsf2017#readme"
+  "homepage": "https://github.com/rtridz/disruptsf2017#readme",
+  "dependencies": {
+    "express": "^4.15.4",
+    "nexmo": "^2.0.2",
+    "pos": "^0.4.2",
+    "request": "^2.81.0"
+  }
 }

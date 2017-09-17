@@ -66,7 +66,7 @@ var UserSession = function (number) {
         if(response == "Help is on its way!"){
             extractLatitudeLongitude(messageText, function (position) {
                 console.log(position);
-                response = "http://maps.google.com/maps?q=" + position.lat + "," + position.lon + " be safe";
+                response = "http://maps.google.com/maps?q=" + position.lat + "," + position.lon;
                 sendMesssage(response);
             });
         }

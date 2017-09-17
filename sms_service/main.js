@@ -34,4 +34,4 @@ app.listen(80);
 console.log("Listening for sms messages");
 
 //temp
-//sendMesssage('Hi, are you in need of assistance?');
+//sendMesssage('Hi, are you in need of assistance?');]=]]==]oi
