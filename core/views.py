@@ -1,17 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView
-#from urllib.request import urlopen
-
+from core.models import *
 
 from facebook import *
 from core.affected.affected import get_affected_zone
 
 from django.contrib import auth
 from django.http import HttpResponseRedirect
-#import urllib.parse
-import urllib
-
 from core.models import Shelter, AssistanceTicket
 from disrupt2017 import settings
 import json
@@ -46,8 +41,8 @@ def login(request):
             }
 
 
-            url = 'https://graph.facebook.com/oauth/access_token?' #+ urllib.parse.urlencode(args)
-            webURL = None#urllib.request.urlopen(url)
+            url = 'https://graph.facebook.com/oauth/access_token?' + urllib.parse.urlencode(args)
+            webURL = urllib.request.urlopen(url)
             data = webURL.read()
             encoding = webURL.info().get_content_charset('utf-8')
             response=json.loads(data.decode(encoding))
@@ -74,18 +69,21 @@ def login(request):
 
 def needhelp(request, optional_form=None):
     """Summary
-    
+
     Args:
         request (TYPE): Description
     """
     #result = parse_and_identify(request)
+
+
     zone = get_affected_zone(request)
-    if zone is not None:
-        return render(request, 'victim_form.html')
-    else:
-        return render(request, 'victim_form.html')
+    # if zone is not None:
+    return render(request, 'victim_form.html', 
+                  {'shelter_id': request.GET['shelter_id']})
+    # else:
+    #     return render(request, 'victim_form.html')
         #return HttpResponse("need to know a bit of location")
-    pass
+
 
 def add_victim(request):
     """Summary
@@ -94,7 +92,24 @@ def add_victim(request):
         request (TYPE): Description
     """
     #print(key + " = " + request.POST[key])
-    print(request.POST.getlist('requirements'))
+    if request.POST:
+        user = MyUser.objects.create(
+            username=request.POST['name'],
+            password=request.POST['password'],
+            phone_number=request.POST['phone'],
+            email=request.POST['email'])
+        user.save()
+
+        shelter_ticket = ShelterTicket.objects.create(
+            user=user,
+            shelter=Shelter.objects.get(pk=int(request.POST['shelter_id'])),
+            connection_type=1)
+        shelter_ticket.save()
+
+        user = auth.authenticate(username=request.POST['name'], 
+                            password=request.POST['password'])
+        if user:
+            auth.login(request, user)
 
     return HttpResponse("<h1>Thanks for submitting your information. Here are some guidelines\
         for you</h1>")

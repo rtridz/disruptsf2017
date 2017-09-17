@@ -5,8 +5,7 @@
     "fields": {
       "username": "John",
       "email": "Lennon@gmail.com",
-      "password" : "blah",
-      "date_of_birth" : "2013-03-16"
+      "password" : "blah"
     }
   },
   {
@@ -15,11 +14,10 @@
     "fields": {
       "username": "Paul",
       "email": "mccartney@gmail.com",
-      "password" : "blah",
-      "date_of_birth" : "2013-03-16"
+      "password" : "blah"
     }
   },
-   {
+  {
     "model": "core.HelpProvider",
     "pk": 1,
     "fields": {
@@ -37,11 +35,9 @@
     "model": "core.Shelter",
     "pk": 1,
     "fields": {
-      "provider" : 1,
     "shelter_name" : "Shelter #1",
     "location_lat" : 32.916023,
     "location_long" : -117.128966,
-    "address" : "9051 Mira Mesa Blvd, San Diego, CA 92126",
     "max_capacity" : 3000,
     "people_inside" :0,
     "people_coming" :1
@@ -51,11 +47,9 @@
     "model": "core.Shelter",
     "pk": 2,
     "fields": {
-      "provider" : 2,
     "shelter_name" : "Shelter #100500",
     "location_lat" : 32.926443,
     "location_long" : -117.149739,
-    "address" : "11230 Avenida Del Gato, San Diego, CA 92126, USA",
     "max_capacity" : 2000,
     "people_inside" :0,
     "people_coming" :0
