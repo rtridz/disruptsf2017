@@ -30,7 +30,7 @@ function sendMesssage(msg) {
 }
 
 //Begin listening for messages
-app.listen(80);
+app.listen(8001);
 console.log("Listening for sms messages");
 
 //temp
