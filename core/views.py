@@ -67,24 +67,6 @@ def login(request):
     return render(request, 'pages/login_page.html', template_context)
 
 
-# def needhelp(request, optional_form=None):
-#     """Summary
-#
-#     Args:
-#         request (TYPE): Description
-#     """
-#     #result = parse_and_identify(request)
-#
-#
-#     zone = get_affected_zone(request)
-#     # if zone is not None:
-#     return render(request, 'victim_form.html',
-#                   {'shelter_id': request.GET['shelter_id']})
-#     # else:
-#     #     return render(request, 'victim_form.html')
-#         #return HttpResponse("need to know a bit of location")
-
-
 def add_victim(request):
     """Summary
     
@@ -93,23 +75,27 @@ def add_victim(request):
     """
     #print(key + " = " + request.POST[key])
     if request.POST:
-        user = MyUser.objects.create(
-            username=request.POST['name'],
-            password=request.POST['password'],
-            phone_number=request.POST['phone'],
-            email=request.POST['email'])
-        user.save()
+        if not request.user.is_active:
+            user = MyUser.objects.create(
+                username=request.POST['name'],
+                password=request.POST['password'],
+                email=request.POST['email'])
+            user.save()
+        else:
+            user = request.user
+
+
+
+
 
         shelter_ticket = ShelterTicket.objects.create(
             user=user,
+            # phone_number=request.POST['phone'],
             shelter=Shelter.objects.get(pk=int(request.POST['shelter_id'])),
             connection_type=1)
         shelter_ticket.save()
 
-        user = auth.authenticate(username=request.POST['name'], 
-                            password=request.POST['password'])
-        if user:
-            auth.login(request, user)
+
 
     return HttpResponse("<h1>Thanks for submitting your information. Here are some guidelines\
         for you</h1>")

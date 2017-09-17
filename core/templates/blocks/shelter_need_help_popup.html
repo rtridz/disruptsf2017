@@ -46,7 +46,8 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="password">Address</label>
   <div class="col-md-5">
-  <text id="address">{{ shelter.location_lat }}______{{ shelter.location_long }}</text>
+{#      TODO https://developer.mapquest.com/documentation/samples/geocoding/v1/reverse/#}
+  <text id="address">Latitude: {{ shelter.location_lat }} Longitude:{{ shelter.location_long }}</text>
   </div>
 </div>
 {% endif %}

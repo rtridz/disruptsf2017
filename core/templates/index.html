@@ -24,7 +24,8 @@
                     '<div class="shelter_name"><a class="shelter_link" href="#{{ shelter.id }}">{{ shelter.shelter_name }}</a></div>' +
                     '<div class="shelter_count">[{{shelter.people_inside}} / {{shelter.max_capacity}}]</div>' +
                     '<a href="#" class="i_need_help" id="shelter_need_help_popup-content" onclick='+"$('#shelter_need_help_popup{{ shelter.id }}').show();"+'>Go there</a>' +
-                    '<a href="#" class="i_want_help" id="shelter_want_help_popup-content" onclick='+"$('#shelter_want_help_popup{{ shelter.id }}').show();"+'>I want to help</a>' +
+{#                    '<a href="#" class="i_want_help" id="shelter_want_help_popup-content" onclick='+"$('#shelter_want_help_popup{{ shelter.id }}').show();"+'>I want to help</a>' +#}
+                      '<a href="/wannahelp" class="i_want_help" id="shelter_want_help_popup-content">I want to help</a>' +
                     '</div>';
 
 
@@ -81,12 +82,12 @@
         </div>
     </div>
 
-    <div style="display: none;" class="shelterpopup" id="shelter_want_help_popup{{ shelter.id }}">
-        <div class="close" onclick="$('#shelter_want_help_popup{{ shelter.id }}').hide()">x</div>
-        <div class="content">
-            {% include "blocks/shelter_want_help_popup.html" with shelter=shelter%}
-        </div>
-    </div>
+{#    <div style="display: none;" class="shelterpopup" id="shelter_want_help_popup{{ shelter.id }}">#}
+{#        <div class="close" onclick="$('#shelter_want_help_popup{{ shelter.id }}').hide()">x</div>#}
+{#        <div class="content">#}
+{#            {% include "blocks/shelter_want_help_popup.html" with shelter=shelter%}#}
+{#        </div>#}
+{#    </div>#}
 
 
         {% endfor %}
@@ -101,12 +102,12 @@
         <div class="container">
             <div class="bottom-menu-item">
                 <div class="block">
-                    Content
+                    <a href="/wannahelp">Want to help</a>
                 </div>
             </div>
             <div class="bottom-menu-item center">
                 <div class="block">
-                    Content
+                    About
                 </div>
             </div>
             <div class="bottom-menu-item">

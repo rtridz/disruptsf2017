@@ -174,6 +174,17 @@ class FacebookSession(models.Model):
 class HelpProvider(models.Model):
     orgname = models.CharField(max_length=50)
 
+#
+# def get_addr_from_cord(lat,long):
+#     url = 'https://www.mapquestapi.com/geocoding/v1/reverse?key=KEY&location=%s-%s&outFormat=json&thumbMaps=false' % (lat,long)
+#
+#     webURL = urllib.request.urlopen(url)
+#     data = webURL.read()
+#     encoding = webURL.info().get_content_charset('utf-8')
+#     response = json.loads(data.decode(encoding))
+#     print(response)
+#     return
+
 
 class Shelter(models.Model):
     shelter_name = models.CharField(max_length=50)
@@ -182,6 +193,7 @@ class Shelter(models.Model):
     max_capacity = models.IntegerField()
     people_inside = models.IntegerField()
     people_coming = models.IntegerField()
+    # address = models.CharField(max_length=200)
 
 
 class ShelterTicket(models.Model):
