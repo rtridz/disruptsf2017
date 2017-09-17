@@ -121,7 +121,8 @@ class MyUser(AbstractBaseUser):
 #
 #
 
-class HelpProvider(models.Model):
+class HelpProvider(AbstractBaseUser):
+    id = models.AutoField(primary_key=True)
     orgname = models.CharField(max_length=50)
 
 

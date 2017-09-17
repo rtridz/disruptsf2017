@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from affected.affected import *
-from utilities import *
+# from affected.affected import *
+# from utilities import *
 from urllib.request import urlopen
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
@@ -10,7 +10,7 @@ from facebook import *
 from django.contrib.auth import authenticate
 import datetime
 from config import conf
-from core.models import MyUser
+from core.models import MyUser, MyUserManager, Shelter, HelpProvider
 
 class indexView(TemplateView):
     template_name = "index.html"
@@ -82,7 +82,7 @@ def operator(request):
     Args:
         request (TYPE): Description
     """
-    pass
+    return 
 
 def viewer(request):
     """Summary
@@ -91,3 +91,22 @@ def viewer(request):
         request (TYPE): Description
     """
     pass
+
+    # provider = models.ForeignKey(HelpProvider, on_delete=models.CASCADE)
+    # shelter_name = models.CharField(max_length=50)
+    # location_lat = models.FloatField()
+    # location_long = models.FloatField()
+    # address = models.CharField(max_length=100)
+    # max_capacity = models.IntegerField()
+    # people_inside = models.IntegerField()
+    # people_coming = models.IntegerField()
+
+def shelter_list(request):
+    help_provider = HelpProvider(orgname='test')
+    help_provider.save()
+    shelter = Shelter(provider=help_provider, shelter_name='test',
+        location_long=0, location_lat=0, address='', max_capacity=1,
+        people_inside=1, people_coming=1)
+    shelter.save()
+
+    return HttpResponse(Shelter.objects.get(provider=help_provider)) 
