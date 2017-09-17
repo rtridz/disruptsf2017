@@ -1,9 +1,101 @@
 {% extends 'base.html' %}
 
-{% block content %}
-    
 
-  <h2>Homepage</h2>
-  <p>Hello {{ request.user.name }}!</p>
-      <p>Hello {{ user.name }}!</p>
+
+    {% block script %}
+
+        <script src="/static/js/mapquest.js"></script>
+        <link type="text/css" rel="stylesheet" href="/static/css/mapquest.css"/>
+
+
+    <script type="text/javascript">
+      window.onload = function() {
+        L.mapquest.key = '{{ settings.MAPQUEST_API_KEY }}';
+
+        var map = L.mapquest.map('map', {
+          center: [37, -119],
+          layers: L.mapquest.tileLayer('map'),
+          zoom: 5
+        });
+
+        {% for shelter in shelters %}
+
+        L.marker([{{ shelter.location_lat }}, {{shelter.location_long}}], {
+          icon: L.mapquest.icons.marker({
+            primaryColor: '#22407F',
+            secondaryColor: '#3B5998',
+            shadow: true,
+            size: '{{ shelter.size }}',
+            symbol: '{{shelter.symbol }}'
+          })
+        }).bindPopup('{{ shelter.shelter_name }}').addTo(map);
+
+        {% endfor %}
+
+
+
+        {% for ticket in tickets %}
+
+        L.marker([{{ ticket.location_lat }}, {{ticket.location_long}}], {
+          icon: L.mapquest.icons.marker({
+            primaryColor: '#cd26d6',
+            secondaryColor: '#720cd6',
+            shadow: true,
+            size: '{{ shelter.size }}',
+            symbol: '{{shelter.symbol }}'
+          })
+        }).bindPopup('{{ ticket.type_of_assistance }}').addTo(map);
+
+        {% endfor %}
+
+        map.addControl(L.mapquest.control());
+      }
+    </script>
+
+
+
+    {% endblock %}
+
+
+
+
+
+
+
+{% block content %}
+
+
+<div style="height: 100%">
+
+    <div id="map" class="map"></div>
+
+    <div class="bottom-menu" style="overflow: hidden;">
+        <div class="container">
+            <div class="bottom-menu-item">
+                <div class="block">
+                    Content
+                </div>
+            </div>
+            <div class="bottom-menu-item center">
+                <div class="block">
+                    Content
+                </div>
+            </div>
+            <div class="bottom-menu-item">
+                <div class="block">
+                    {% include "blocks/auth_block.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
 {% endblock %}

@@ -1,0 +1,9 @@
+{% for s in shelters %}
+<div>
+    {{ s.shelter_name }}
+    <br/> {{ s.address }}
+    <br/>[{{s.people_inside}} / {{s.max_capacity}}]
+</div>
+<hr/>
+
+{% endfor %}

@@ -15,20 +15,17 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from core import views
 from core.views import *
 
 urlpatterns = [
 
     url(r'^admin/', admin.site.urls),
-    url(r'^index/', indexView.as_view()), #template_name='index.html'
     url(r'^needhelp/submit$', add_victim),
-    url(r'^$', index_view),
+    url(r'^$', indexView),
     url(r"^login/$", login),
     url(r'^needhelp/', needhelp),
-    url(r'^wannahelp/', wannahelp),
-    url(r'^operator/', operator),
-    url(r'^shelter_list/', shelter_list),
+    # url(r'^wannahelp/', wannahelp),
+    # url(r'^operator/', operator),
     # url(r'^(?P<shelter_id>[0-9]+)/$', views.shelter_info, name='shelter_detail'),
     # url(r'^shelters/', views.shelters_map, name='shelter_map')
 ]

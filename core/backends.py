@@ -18,7 +18,6 @@ class FacebookBackend:
         args = {'fields': 'id,name,email,birthday,gender,link'}
         profile = graph.get_object('me', **args)
 
-        print(profile)
 
         try:
             user = models.MyUser.objects.get(username=profile['id'])
