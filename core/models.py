@@ -1,8 +1,10 @@
-from django.db import models
-
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
+from django.db import models
+from django.contrib.auth.models import User
+import json
+import urllib.parse
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, password, facebook_id, link, name, gender, username):
@@ -47,20 +49,19 @@ class MyUser(AbstractBaseUser):
         unique=True,
         db_index=True,
     )
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    facebook_id = models.BigIntegerField(blank=True)
-    name = models.CharField(max_length=300)
-    link = models.URLField(max_length=300, blank=True)
+    facebook_id = models.BigIntegerField(blank=True, null=True)
+    name = models.CharField(max_length=300, null=True)
+    link = models.URLField(max_length=300, blank=True, null=True)
     username = models.CharField(max_length=300, blank=True)
-    gender = models.CharField(max_length=200, blank=True)
+    gender = models.CharField(max_length=200, blank=True, null=True)
 
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-
 
     def get_full_name(self):
         # The user is identified by their email address
@@ -106,7 +107,52 @@ class MyUser(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
+class FacebookSessionError(Exception):
+    def __init__(self, error_type, message):
+        self.message = message
+        self.type = error_type
 
+    def get_message(self):
+        return self.message
+
+    def get_type(self):
+        return self.type
+
+    def __unicode__(self):
+        return u'%s: "%s"' % (self.type, self.message)
+
+class FacebookSession(models.Model):
+
+    access_token = models.CharField(max_length=103, unique=True)
+    expires = models.IntegerField(null=True)
+
+    user = models.ForeignKey(MyUser, null=True)
+    uid = models.BigIntegerField(unique=True, null=True)
+
+    class Meta:
+        unique_together = (('user', 'uid'), ('access_token', 'expires'))
+
+    def query(self, object_id, connection_type=None, metadata=False):
+
+        url = 'https://graph.facebook.com/%s' % (object_id)
+        if connection_type:
+            url += '/%s' % (connection_type)
+
+        params = {'access_token': self.access_token}
+        if metadata:
+            params['metadata'] = 1
+
+        url += '?' + urllib.parse.urlencode(params)
+        webURL = urllib.request.urlopen(url)
+        data = webURL.read()
+        encoding = webURL.info().get_content_charset('utf-8')
+        response = json.loads(data.decode(encoding))
+
+
+        if 'error' in response:
+            error = response['error']
+            raise FacebookSessionError(error['type'], error['message'])
+        return response
 
 #
 # class Person(models.Model):
@@ -136,17 +182,25 @@ class Shelter(models.Model):
     people_coming = models.IntegerField()
 
 
-class Affected(MyUser):
-    shelter_going = models.ForeignKey(Shelter)
-    shelter_signed_in = models.ForeignKey(Shelter)
+# class Affected(MyUser):
+#     assosicated_shelter = models.ForeignKey(Shelter)
+#     GOING_TO = 1
+#     SIGNED_IN = 2
+#     TYPE_CHOICES = (
+#         (GOING_TO, 'Going to'),
+#         (SIGNED_IN, 'Signed in'),
+#     )
+#     connection_type = models.IntegerField(choices=TYPE_CHOICES)
 
 
 class AssistanceTicket(models.Model):
     user_created = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     date_created = models.DateField()
-    type_of_assistance = models.TextField()
-
     date_needed = models.DateField()
+    type_of_assistance = models.TextField()
+    location_lat = models.FloatField()
+    location_long = models.FloatField()
+    
 
     CRITICAL = 1
     URGENT = 2
