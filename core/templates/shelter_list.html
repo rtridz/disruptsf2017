@@ -1,1 +1,46 @@
-{{ shelter_list }}
+<html>
+<header>
+
+    <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.1.0/mapquest.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.1.0/mapquest.css"/>
+
+    <script type="text/javascript">
+      window.onload = function() {
+        L.mapquest.key = 'duaM3CgalvXJOrgqr0JRVPWsJn17jVmn';
+
+        var map = L.mapquest.map('map', {
+          center: [0, 0],
+          layers: L.mapquest.tileLayer('map'),
+          zoom: 12
+        });
+
+        {% for shelter in shelter_list %}
+
+        L.marker([{{ shelter.location_lat }}, {{shelter.location_long}}], {
+          icon: L.mapquest.icons.marker({
+            primaryColor: '#22407F',
+            secondaryColor: '#3B5998',
+            shadow: true,
+            size: 'md',
+            symbol: 'A'
+          })
+        }).bindPopup('{{ shelter.shelter_name }}').addTo(map);
+
+        {% endfor %}
+
+        map.addControl(L.mapquest.control());
+      }
+    </script>
+    <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.1.0/mapquest.css"/>
+
+</header>
+
+<body>
+    <div id="map" style="width: 100%; height: 530px;"></div>
+    
+    
+    {{ shelter_list }}
+</body>
+
+
+</html>

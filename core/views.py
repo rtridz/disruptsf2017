@@ -94,11 +94,13 @@ def viewer(request):
 
 
 def shelter_list(request):
-    help_provider = HelpProvider(orgname='test')
-    help_provider.save()
-    shelter = Shelter(provider=help_provider, shelter_name='test',
-        location_long=0, location_lat=0, address='', max_capacity=1,
-        people_inside=1, people_coming=1)
-    shelter.save()
 
-    return HttpResponse(Shelter.objects.get(provider=help_provider)) 
+    help_provider = HelpProvider.objects.get(id=1)
+
+    # shelter = Shelter(provider=help_provider, shelter_name='test',
+    #     location_long=0, location_lat=0, address='', max_capacity=1,
+    #     people_inside=1, people_coming=1)
+    # shelter.save()
+
+    result = Shelter.objects.filter(provider=help_provider).all()
+    return render(request, 'shelter_list.html', {'shelter_list': result})
