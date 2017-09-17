@@ -1,3 +1,5 @@
+import urllib
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
@@ -105,6 +107,23 @@ class MyUser(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class FacebookSessionError(Exception):
+    def __init__(self, error_type, message):
+        self.message = message
+        self.type = error_type
+
+    def get_message(self):
+        return self.message
+
+    def get_type(self):
+        return self.type
+
+    def __unicode__(self):
+        return u'%s: "%s"' % (self.type, self.message)
+
+
 
 class FacebookSession(models.Model):
 

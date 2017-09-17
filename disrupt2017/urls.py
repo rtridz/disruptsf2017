@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^operator/', operator),
     url(r'^$', indexView),
     url(r"^login/$", login),
-    url(r'^needhelp/', needhelp),
+    # url(r'^needhelp/', needhelp),
     url(r'^emergency_help/', emergency_help),
     url(r'^get_tickets/', get_tickets),
     # url(r'^wannahelp/', wannahelp),
