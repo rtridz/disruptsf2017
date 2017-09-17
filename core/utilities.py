@@ -6,4 +6,4 @@ def IP2loc(ipaddress):
     return response
 
 def getIPfromReq(requests):
-    return get_real_ip(requests)
+    return get_reaal_ip(requests)

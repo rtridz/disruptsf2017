@@ -1,36 +1,39 @@
 from urllib.request import urlopen
-
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-from django.views.generic import TemplateView
-
-from core.models import MyUser, FacebookSession
 
 
-class indexView(TemplateView):
-    template_name = "index.html"
+from facebook import *
+from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as auth_login
 
-    def index_view(self, *args, **kwargs):
-            response = HttpResponse('')
-            return response
-
+from core import models
+from core.affected.affected import get_affected_zone
+from core.models import MyUser
 
 from django.contrib import auth
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, render
-from django.template import RequestContext
-
-import cgi
-import simplejson
+from django.shortcuts import render
+import urllib.parse
 import urllib
 from disrupt2017 import settings
+
+
+
+
+def index_view(request):
+    error = None
+
+    template_context = {'settings': settings, 'error': error}
+
+    return render(request, 'index.html', template_context)
 
 
 def login(request):
     error = None
 
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/yay/')
+        return HttpResponseRedirect('/')
 
     if request.GET:
         if 'code' in request.GET:
@@ -41,24 +44,24 @@ def login(request):
                 'code': request.GET['code'],
             }
 
-            url = 'https://graph.facebook.com/oauth/access_token?' + \
-                    urllib.urlencode(args)
-            response = cgi.parse_qs(urllib.urlopen(url).read())
-            access_token = response['access_token'][0]
-            expires = response['expires'][0]
 
-            facebook_session = FacebookSession.objects.get_or_create(
-                access_token=access_token,
-            )[0]
+            url = 'https://graph.facebook.com/oauth/access_token?' + urllib.parse.urlencode(args)
+            webURL = urllib.request.urlopen(url)
+            data = webURL.read()
+            encoding = webURL.info().get_content_charset('utf-8')
+            response=json.loads(data.decode(encoding))
 
-            facebook_session.expires = expires
-            facebook_session.save()
+            print(response)
 
-            user = auth.authenticate(token=access_token)
+            access_token = response['access_token']
+            expires = response['expires_in']
+
+
+            user = auth.authenticate(token=access_token, expires=expires)
             if user:
                 if user.is_active:
                     auth.login(request, user)
-                    return HttpResponseRedirect('/index')
+                    return HttpResponseRedirect('/')
                 else:
                     error = 'AUTH_DISABLED'
             else:
@@ -67,8 +70,9 @@ def login(request):
             error = 'AUTH_DENIED'
 
     template_context = {'settings': settings, 'error': error}
-
     return render(request, 'blocks/facebook.html', template_context)
+
+
 
 def needhelp(request):
     """Summary
