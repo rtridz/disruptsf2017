@@ -71,7 +71,7 @@ var UserSession = function (number) {
                 request({
                     headers: {'content-type' : 'application/x-www-form-urlencoded'},
                     url:     'http://localhost:8000/emergency_help/',
-                    body:    "number='1'&type='brokeleg'&lat="+position.lat+"&long="+position.lon+"&status=2"
+                    body:    "number="+newMessage.msisdn+"&type='injured'&lat="+position.lat+"&long="+position.lon+"&status=2"
                 }, function (error, response, body) {
                     sendMesssage(response);
                 }
