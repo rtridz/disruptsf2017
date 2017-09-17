@@ -14,6 +14,8 @@
 <form class="form-horizontal" action="/needhelp/submit" method="post">
 <fieldset>
 
+<input type="hidden" name="shelter_id" value="{{ shelter_id }}" id="shelter_id">
+
 <!-- Form Name -->
 <legend>Please specify your details and requirements</legend>
 
@@ -27,11 +29,19 @@
   </div>
 </div>
 
+<div class="form-group">
+  <label class="col-md-4 control-label" for="password">Password</label>  
+  <div class="col-md-5">
+  <input id="password" name="password" type="text" placeholder="" class="form-control input-md">
+    
+  </div>
+</div>
+
 <!-- Text input-->
 <div class="form-group">
   <label class="col-md-4 control-label" for="textinput">Address</label>  
   <div class="col-md-5">
-  <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+  <input id="address" name="textinput" type="text" placeholder="" class="form-control input-md">
     
   </div>
 </div>
@@ -41,6 +51,15 @@
   <label class="col-md-4 control-label" for="phone">Phone Number</label>  
   <div class="col-md-5">
   <input id="phone" name="phone" type="text" placeholder="" class="form-control input-md">
+    
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="email">Email</label>  
+  <div class="col-md-5">
+  <input id="email" name="email" type="text" placeholder="" class="form-control input-md">
     
   </div>
 </div>

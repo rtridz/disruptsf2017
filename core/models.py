@@ -1,111 +1,17 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, AbstractUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
 from django.db import models
 from django.contrib.auth.models import User
 import json
-#import urllib.parse
-
-class MyUserManager(BaseUserManager):
-    def create_user(self, email, date_of_birth, password, facebook_id, link, name, gender, username):
-        """
-        Creates and saves a User with the given email, date of
-        birth,password, facebook id, link, name,gender and balance.
-        """
-        if not email:
-            raise ValueError('Users must have an email address')
-
-        user = self.model(
-            email=MyUserManager.normalize_email(email),
-            date_of_birth=date_of_birth,
-            facebook_id=facebook_id,
-            link=link,
-            name=name,
-            gender=gender,
-            username=username,
-        )
-
-        user.set_password(password)
-        user.is_admin = False
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, password):
-        """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
-        """
-        user = self.create_user(email, password)
-
-        user.is_admin = True
-        user.save(using=self._db)
-        return user
+import urllib.parse
+import datetime
 
 
-class MyUser(AbstractBaseUser):
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-        db_index=True,
-    )
-    date_of_birth = models.DateField(null=True)
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+class MyUser(AbstractUser):
+    phone_number = models.CharField(max_length=103, blank=True, null=True)
     facebook_id = models.BigIntegerField(blank=True, null=True)
-    name = models.CharField(max_length=300, null=True)
-    link = models.URLField(max_length=300, blank=True, null=True)
-    username = models.CharField(max_length=300, blank=True)
-    gender = models.CharField(max_length=200, blank=True, null=True)
 
-    objects = MyUserManager()
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
-
-    def get_full_name(self):
-        # The user is identified by their email address
-        return self.email
-
-    def get_short_name(self):
-        # The user is identified by their email address
-        return self.email
-
-    def __unicode__(self):
-        return self.email
-
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
-    def get_balance(self):
-        return self.balance
-
-    def get_gender(self):
-        return self.gender
-
-    def get_link(self):
-        return self.link
-
-    def get_username(self):
-        return self.username
-
-    def get_birthday(self):
-        return self.date_of_birth
-
-    def get_name(self):
-        return self.name
-
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
 
 class FacebookSessionError(Exception):
     def __init__(self, error_type, message):
@@ -182,21 +88,25 @@ class Shelter(models.Model):
     #people_coming = models.IntegerField()
 
 
-# class Affected(MyUser):
-#     assosicated_shelter = models.ForeignKey(Shelter)
-#     GOING_TO = 1
-#     SIGNED_IN = 2
-#     TYPE_CHOICES = (
-#         (GOING_TO, 'Going to'),
-#         (SIGNED_IN, 'Signed in'),
-#     )
-#     connection_type = models.IntegerField(choices=TYPE_CHOICES)
+class ShelterTicket(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    shelter = models.ForeignKey(Shelter, on_delete=models.CASCADE)
+    date_created = models.DateField(auto_now_add=True)
+    family_size = models.IntegerField(blank=True, null=True)
+
+    GOING_TO = 1
+    SIGNED_IN = 2
+    TYPE_CHOICES = (
+        (GOING_TO, 'Going to'),
+        (SIGNED_IN, 'Signed in'),
+    )
+    connection_type = models.IntegerField(choices=TYPE_CHOICES) 
 
 
 class AssistanceTicket(models.Model):
-    user_created = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    date_created = models.DateField()
-    date_needed = models.DateField()
+    user_created = models.ForeignKey(MyUser, blank=True, null=True)
+    date_created = models.DateField(auto_now_add=True)
+    date_needed = models.DateField(auto_now_add=True)
     type_of_assistance = models.TextField()
     location_lat = models.FloatField()
     location_long = models.FloatField()
