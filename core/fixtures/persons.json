@@ -1,0 +1,65 @@
+[
+  {
+    "model": "core.MyUser",
+    "pk": 1,
+    "fields": {
+      "username": "John",
+      "email": "Lennon@gmail.com",
+      "password" : "blah",
+      "date_of_birth" : "2013-03-16"
+    }
+  },
+  {
+    "model": "core.MyUser",
+    "pk": 2,
+    "fields": {
+      "username": "Paul",
+      "email": "mccartney@gmail.com",
+      "password" : "blah",
+      "date_of_birth" : "2013-03-16"
+    }
+  },
+   {
+    "model": "core.HelpProvider",
+    "pk": 1,
+    "fields": {
+      "orgname": "RedCross"
+    }
+  },
+     {
+    "model": "core.HelpProvider",
+    "pk": 2,
+    "fields": {
+      "orgname": "GoodPeople"
+    }
+  },
+     {
+    "model": "core.Shelter",
+    "pk": 1,
+    "fields": {
+      "provider" : 1,
+    "shelter_name" : "Shelter #1",
+    "location_lat" : 10,
+    "location_long" : 10,
+    "address" : "10 blah street San fran",
+    "max_capacity" : 3000,
+    "people_inside" :0,
+    "people_coming" :1
+    }
+  },
+      {
+    "model": "core.Shelter",
+    "pk": 2,
+    "fields": {
+      "provider" : 2,
+    "shelter_name" : "Shelter #100500",
+    "location_lat" : 20,
+    "location_long" : 20,
+    "address" : "125 blah street San fran",
+    "max_capacity" : 2000,
+    "people_inside" :0,
+    "people_coming" :0
+    }
+  }
+
+]
