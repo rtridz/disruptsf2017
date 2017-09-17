@@ -59,7 +59,6 @@
     "model": "core.AssistanceTicket",
     "pk": 1,
     "fields": {
-      "user_created": 2,
       "type_of_assistance": "i want bananas. now.",
       "location_lat" : 33,
       "location_long" : -118,
