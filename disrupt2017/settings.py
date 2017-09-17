@@ -123,14 +123,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 AUTH_USER_MODEL = 'core.MyUser'
 
 
-FACEBOOK_APP_ID = '1423148211067211'
-FACEBOOK_API_KEY = ''
-FACEBOOK_API_SECRET = 'b8d286d27579a32d892ef69d271aed2f'
-FACEBOOK_REDIRECT_URI = 'http://example.com/login/'
+FACEBOOK_APP_ID = '1660628803955699'
+FACEBOOK_API_SECRET = '49229ca1854e451b7f79c3a501d7160b'
+FACEBOOK_REDIRECT_URI = 'http://localhost:8000/login/'
 
 AUTHENTICATION_BACKENDS = (
     'core.backends.FacebookBackend',

@@ -1,12 +1,10 @@
-from django.db import models
-
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
 from django.db import models
 from django.contrib.auth.models import User
-
-
+import json
+import urllib.parse
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, date_of_birth, password, facebook_id, link, name, gender, username):
@@ -64,7 +62,6 @@ class MyUser(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-
 
     def get_full_name(self):
         # The user is identified by their email address
@@ -125,6 +122,7 @@ class FacebookSessionError(Exception):
         return u'%s: "%s"' % (self.type, self.message)
 
 class FacebookSession(models.Model):
+
     access_token = models.CharField(max_length=103, unique=True)
     expires = models.IntegerField(null=True)
 
@@ -135,8 +133,6 @@ class FacebookSession(models.Model):
         unique_together = (('user', 'uid'), ('access_token', 'expires'))
 
     def query(self, object_id, connection_type=None, metadata=False):
-        import urllib
-        import simplejson
 
         url = 'https://graph.facebook.com/%s' % (object_id)
         if connection_type:
@@ -146,13 +142,17 @@ class FacebookSession(models.Model):
         if metadata:
             params['metadata'] = 1
 
-        url += '?' + urllib.urlencode(params)
-        response = simplejson.load(urllib.urlopen(url))
+        url += '?' + urllib.parse.urlencode(params)
+        webURL = urllib.request.urlopen(url)
+        data = webURL.read()
+        encoding = webURL.info().get_content_charset('utf-8')
+        response = json.loads(data.decode(encoding))
+
+
         if 'error' in response:
             error = response['error']
             raise FacebookSessionError(error['type'], error['message'])
         return response
-
 
 #
 # class Person(models.Model):
